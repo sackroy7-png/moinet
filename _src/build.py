@@ -146,7 +146,7 @@ def page(meta, main, slug):
     canonical = SITE + ("/" if slug == "index" else f"/{meta.get('canonical', slug)}/")
     og_img = meta.get("og_image", f"{SITE}/wp-content/uploads/header_accueil.jpg")
     extra_head = meta.get("head", "")
-    scripts = '<script src="assets/js/main.js" defer></script>'
+    scripts = '<script src="assets/js/main.js" defer></script>\n<script src="assets/js/motion.js" defer></script>'
     if meta.get("catalogue") == "yes":
         scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
     return f'''<!doctype html>

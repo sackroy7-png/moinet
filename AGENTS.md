@@ -44,6 +44,15 @@ Les `*.html` à la racine sont générés.
    sont remplacés par l'adresse et les horaires de la boutique historique. Cibles tactiles de 44 px.
    Toutes ces règles sont en fin de `assets/css/main.css` (« Révision skills »).
 
+4. **Animations signature (nov. 2026, demande du client)**, inspirées de 21st.dev, dans
+   `assets/js/motion.js` et en fin de `main.css`. Titres révélés mot à mot au chargement, photo du
+   héros qui s'ouvre, archive qui se « développe », libellé des boutons qui roule, reflet sur le
+   bouton rouge, boutons magnétiques, halo qui suit le pointeur, aperçu des devantures au survol de
+   la liste des boutiques, frise tracée au défilement, pastille de couleur qui glisse entre les
+   parfums, défilement infini des boîtes en fer et des villes (pause au survol + bouton pause).
+   Écart volontaire au tasteskill (pas de carrousel) : les deux défilements, demandés par le client.
+   Survols seulement avec une souris ; sous `prefers-reduced-motion`, motion.js ne fait rien.
+
 ## À ne pas casser
 
 - Panier, compte, commandes, CGV et mentions légales restent ceux de WooCommerce

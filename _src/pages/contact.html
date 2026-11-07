@@ -1,0 +1,57 @@
+<!--meta
+title: Nous contacter · Service client Maison Moinet
+description: Une question sur une commande ou sur nos produits ? Écrivez au service client de la Confiserie Moinet ou appelez directement l’une de nos boutiques.
+nav: contact
+canonical: nous-contacter
+-->
+<section class="page-hero">
+  <div class="wrap">
+    <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="index.html">Accueil</a></li><li aria-current="page">Contact</li></ol></nav>
+    <p class="eyebrow">Service client</p>
+    <h1>Une question&nbsp;? <em class="accent">Écrivez-nous.</em></h1>
+    <p class="lead">Pour des questions à propos d’une commande ou des informations sur nos produits.</p>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="contact-card">
+        <h2>Par e-mail</h2>
+        <p><a href="mailto:contact@confiserie-moinet.fr">contact@confiserie-moinet.fr</a></p>
+      </div>
+      <div class="contact-card">
+        <h2>Par téléphone, en boutique</h2>
+        <ul class="phones">
+          <li><span>Vichy · Confiserie Moinet</span><a href="tel:+33470323177">04 70 32 31 77</a></li>
+          <li><span>Vichy · Côté Sucré</span><a href="tel:+33470319789">04 70 31 97 89</a></li>
+          <li><span>Clermont-Ferrand</span><a href="tel:+33473242091">04 73 24 20 91</a></li>
+          <li><span>Paris</span><a href="tel:+33142028718">01 42 02 87 18</a></li>
+        </ul>
+        <p class="small muted" style="margin-top:1rem">Horaires d’ouverture sur la page <a href="magasins.html">Nos boutiques</a>.</p>
+      </div>
+      <div class="contact-card">
+        <h2>Votre commande</h2>
+        <p class="muted">Suivez vos commandes et gérez vos adresses depuis <a href="https://confiserie-moinet.fr/mon-compte/">votre compte</a>.</p>
+      </div>
+    </div>
+    <form class="form" id="contact-form" novalidate>
+      <h2>Envoyer un message</h2>
+      <div>
+        <label for="email">Votre e-mail <span aria-hidden="true">*</span></label>
+        <input class="field" id="email" name="email" type="email" autocomplete="email" required aria-required="true">
+      </div>
+      <div>
+        <label for="reference">Référence de commande <span class="hint">(facultatif)</span></label>
+        <input class="field" id="reference" name="reference" type="text" inputmode="numeric">
+      </div>
+      <div>
+        <label for="message">Votre message <span aria-hidden="true">*</span></label>
+        <textarea class="field" id="message" name="message" required aria-required="true"></textarea>
+      </div>
+      <p class="small muted">Les champs marqués d’un astérisque sont obligatoires.</p>
+      <div><button class="btn" type="submit">Envoyer</button></div>
+      <p class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>

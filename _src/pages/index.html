@@ -37,13 +37,13 @@ head: <link rel="preload" as="image" href="assets/img/hero.webp" imagesrcset="as
       <p>Depuis toujours, la Maison Moinet est à la fois fabricant et commerçant. Retrouvez nos douceurs dans la boutique historique de 1852, à Clermont-Ferrand et à Paris.</p>
       <a class="btn btn--light" href="magasins.html">Voir les adresses et horaires</a>
     </div>
-    <ul class="store-list">
-      <li><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital, la boutique historique</span></li>
-      <li><span class="city">Vichy</span><strong>Côté Sucré</strong><span class="addr">11, rue Georges-Clemenceau</span></li>
-      <li><span class="city">Vichy</span><strong>Pastillerie Moinet</strong><span class="addr">2, rue Président Roosevelt</span></li>
-      <li><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau, glaces artisanales</span></li>
-      <li><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale, décor Art nouveau</span></li>
-      <li><span class="city">Paris</span><strong>Maison Moinet</strong><span class="addr">45, rue Saint-Louis-en-l’Île</span></li>
+    <ul class="store-list" data-previews>
+      <li data-preview="assets/img/shop-vichy.webp"><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital, la boutique historique</span></li>
+      <li data-preview="assets/img/shop-cotesucre.webp"><span class="city">Vichy</span><strong>Côté Sucré</strong><span class="addr">11, rue Georges-Clemenceau</span></li>
+      <li data-preview="assets/img/shop-pastillerie.webp"><span class="city">Vichy</span><strong>Pastillerie Moinet</strong><span class="addr">2, rue Président Roosevelt</span></li>
+      <li data-preview="assets/img/shop-glaces.webp"><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau, glaces artisanales</span></li>
+      <li data-preview="assets/img/shop-clermont.webp"><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale, décor Art nouveau</span></li>
+      <li data-preview="assets/img/shop-paris.webp"><span class="city">Paris</span><strong>Maison Moinet</strong><span class="addr">45, rue Saint-Louis-en-l’Île</span></li>
     </ul>
   </div>
 </section>
@@ -146,17 +146,22 @@ head: <link rel="preload" as="image" href="assets/img/hero.webp" imagesrcset="as
       <h2 id="griffe-title">Les boîtes Moinet, gravées pour Vichy</h2>
       <p>Dès les années 1930, Rémi Moinet dessine boîtes et prospectus et commande au graveur Paul Devaux des modèles qui représentent Vichy à différentes époques&nbsp;: Art Déco, Ancien Régime, Médiéval.</p>
     </div>
-    <div class="tin-wall">
-      <img src="assets/img/identite-2.webp" alt="Boîte ronde ornée de blasons, marquée Vichy 1852." loading="lazy" width="900" height="700">
-      <img src="assets/img/identite-6.webp" alt="Boîte ronde « Praline Vichy » décorée de roses de style Art Déco." loading="lazy" width="900" height="700">
-      <img src="assets/img/identite-1.webp" alt="Boîte cylindrique de sucres d’orge digestifs Vichy-Santé." loading="lazy" width="900" height="700">
-      <img src="assets/img/identite-5.webp" alt="Boîte ronde orange « Les bonbons de Vichy de H. Moinet » illustrée de vues de Vichy." loading="lazy" width="900" height="700">
-      <img src="assets/img/identite-3.webp" alt="Papier illustré « Les Bonbons du Pays Bourbonnais de H. Moinet »." loading="lazy" width="900" height="700">
-      <img src="assets/img/bourbonnaise.webp" alt="Carton publicitaire « Tentation » : une Bourbonnaise tenant une boîte des bonbons de Vichy de H. Moinet." loading="lazy" width="667" height="933" style="object-position: 50% 18%">
-      <img src="assets/img/identite-4.webp" alt="Carton publicitaire jaune « Pour votre plaisir, pour vos cadeaux, les bonbons de H. Moinet »." loading="lazy" width="900" height="700">
-      <img src="assets/img/cat-bicentenaire-de-la-pastille.webp" alt="Boîte en fer orange de pastilles éditée pour le bicentenaire de la pastille de Vichy." loading="lazy" width="700" height="700">
-    </div>
   </div>
+  <div class="tin-marquee" data-marquee>
+    <div class="marquee-row"><div class="marquee-track">
+          <img src="assets/img/identite-2.webp" alt="Boîte ronde ornée de blasons, marquée Vichy 1852." loading="lazy" width="900" height="700">
+          <img src="assets/img/identite-6.webp" alt="Boîte ronde « Praline Vichy » décorée de roses de style Art Déco." loading="lazy" width="900" height="700">
+          <img src="assets/img/identite-1.webp" alt="Boîte cylindrique de sucres d’orge digestifs Vichy-Santé." loading="lazy" width="900" height="700">
+          <img src="assets/img/identite-5.webp" alt="Boîte ronde orange « Les bonbons de Vichy de H. Moinet » illustrée de vues de Vichy." loading="lazy" width="900" height="700">
+    </div></div>
+    <div class="marquee-row marquee-row--rev"><div class="marquee-track">
+          <img src="assets/img/identite-3.webp" alt="Papier illustré « Les Bonbons du Pays Bourbonnais de H. Moinet »." loading="lazy" width="900" height="700">
+          <img src="assets/img/bourbonnaise.webp" alt="Carton publicitaire « Tentation » : une Bourbonnaise tenant une boîte des bonbons de Vichy de H. Moinet." loading="lazy" width="667" height="933" style="object-position: 50% 18%">
+          <img src="assets/img/identite-4.webp" alt="Carton publicitaire jaune « Pour votre plaisir, pour vos cadeaux, les bonbons de H. Moinet »." loading="lazy" width="900" height="700">
+          <img src="assets/img/cat-bicentenaire-de-la-pastille.webp" alt="Boîte en fer orange de pastilles éditée pour le bicentenaire de la pastille de Vichy." loading="lazy" width="700" height="700">
+    </div></div>
+  </div>
+  <div class="wrap marquee-ctrl"><button type="button" class="marquee-toggle" data-marquee-toggle aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg><span>Mettre en pause</span></button></div>
 </section>
 
 <section class="section screen" aria-labelledby="savoir-title">
@@ -217,7 +222,10 @@ head: <link rel="preload" as="image" href="assets/img/hero.webp" imagesrcset="as
       <p>Des sachets de pastilles aux coffrets cadeaux. Paiement sécurisé par CB, Visa ou Mastercard, expédition en Colissimo Suivi.</p>
     </div>
     <a class="btn btn--light" href="boutique.html">Commander en ligne</a>
-    <p class="close-word" aria-hidden="true"><span>Vichy</span> <span>Clermont</span> <span>Paris</span></p>
+  </div>
+  <div class="close-marquee" data-marquee aria-hidden="true"><div class="marquee-track"><span>Vichy</span><span>Clermont-Ferrand</span><span>Paris</span><span>Vichy</span><span>Clermont-Ferrand</span><span>Paris</span></div></div>
+  <div class="wrap marquee-ctrl marquee-ctrl--light"><button type="button" class="marquee-toggle" data-marquee-toggle aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg><span>Mettre en pause</span></button>
+
   </div>
 </section>
 

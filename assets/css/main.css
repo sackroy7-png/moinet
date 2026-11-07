@@ -896,3 +896,128 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 }
 /* Boîtes : format paysage, l'objet entier reste visible */
 @media (min-width: 900px) { .tin-wall img { aspect-ratio: 4 / 3; object-fit: contain; padding: 4%; } }
+
+/* ==========================================================================
+   Animations signature (assets/js/motion.js) — inspirations 21st.dev
+   Tout est conditionné à html.motion, posé par le script hors reduced-motion.
+   ========================================================================== */
+:root { --spring: cubic-bezier(.3, 1.35, .5, 1); --oct: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+
+/* 1. Titres : les mots sortent de leur masque */
+.motion .is-split .wm { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .14em; margin-bottom: -.14em; }
+.motion .is-split .wm > span { display: inline-block; transform: translateY(108%); animation: wordUp 1s var(--ease) forwards; animation-delay: calc(.12s + var(--i) * 55ms); }
+@keyframes wordUp { to { transform: none; } }
+.motion .hero-copy > h1, .motion .page-hero h1 { animation: none !important; opacity: 1 !important; }
+.motion [data-enter] .hero-copy > :not(h1) { animation-delay: calc(.35s + var(--words-delay, .4s)); }
+
+/* Héros : la photo s'ouvre depuis le centre, l'archive se « développe » */
+.motion [data-enter] .hero-media { animation: none; }
+.motion .hero-media .frame { animation: unfold 1.4s var(--ease) .1s both; }
+@keyframes unfold { from { clip-path: inset(18% 22% 18% 22%); } to { clip-path: inset(0); } }
+.motion .hero-media .frame img { animation: heroZoom 2.2s var(--ease) .1s both; }
+.motion .hero-archive { animation: develop 1.8s var(--ease) 1s both; }
+@keyframes develop {
+  0% { opacity: 0; transform: translateY(18px); filter: blur(8px) grayscale(1) brightness(1.7); }
+  45% { opacity: 1; }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+/* 2. Boutons : le libellé roule, un reflet traverse le bouton rouge */
+.btn { position: relative; isolation: isolate; }
+.btn .roll { display: inline-grid; overflow: hidden; line-height: 1.25; }
+.btn .roll-a, .btn .roll-b { grid-area: 1 / 1; transition: transform .5s var(--ease); }
+.btn .roll-b { transform: translateY(115%); }
+.btn:hover .roll-a { transform: translateY(-115%); }
+.btn:hover .roll-b { transform: none; }
+.motion .btn:not(.btn--ghost)::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .32) 50%, transparent 70%);
+  transform: translateX(-130%); transition: transform .9s var(--ease);
+}
+.motion .btn:not(.btn--ghost):hover::after { transform: translateX(130%); }
+.btn--ghost::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--encre);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .45s var(--ease);
+}
+.btn--ghost:hover { --bg: transparent; }
+.btn--ghost:hover::before { transform: scaleY(1); }
+.section--ink .btn--ghost::before { background: var(--creme); }
+
+/* 3. Boutons magnétiques */
+.magnetic { translate: var(--mx, 0px) var(--my, 0px); transition: translate .3s var(--ease), background-color .25s var(--ease), color .25s var(--ease); }
+
+/* 4. Halo qui suit le pointeur */
+.spot { position: relative; }
+.spot::before {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .35s var(--ease);
+  background: radial-gradient(260px circle at var(--sx, 50%) var(--sy, 50%), rgba(255, 236, 200, .28), transparent 70%);
+}
+.recipe.spot::before, .store.spot::before, .product.spot::before { background: radial-gradient(300px circle at var(--sx, 50%) var(--sy, 50%), rgba(215, 21, 53, .07), transparent 70%); }
+.spot:hover::before { opacity: 1; }
+.motion .tile .tile-label strong { transition: transform .45s var(--ease); }
+.motion .tile:hover .tile-label strong { transform: translateY(-4px); }
+
+/* 5. Liste des boutiques : aperçu de la devanture */
+.store-preview {
+  position: fixed; left: 0; top: 0; z-index: 60; width: clamp(220px, 20vw, 300px); aspect-ratio: 4 / 3;
+  pointer-events: none; clip-path: var(--oct); opacity: 0; scale: .55;
+  transition: opacity .25s var(--ease), scale .45s var(--spring);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
+}
+.store-preview.is-on { opacity: 1; scale: 1; }
+.store-preview img { width: 100%; height: 100%; object-fit: cover; }
+.motion .store-list[data-previews] li { transition: padding-left .4s var(--ease); }
+.motion .store-list[data-previews] li:hover { padding-left: 14px; }
+.motion .store-list[data-previews] li strong { transition: color .3s var(--ease); }
+.motion .store-list[data-previews] li:hover strong { color: #f3a6b2; }
+
+/* 6. Frise qui se trace */
+.timeline.is-drawn::after {
+  content: ""; position: absolute; left: 5.3rem; top: .6rem; bottom: .6rem; width: 2px; margin-left: -.5px;
+  background: var(--rouge); transform-origin: top; transform: scaleY(var(--draw, 0));
+}
+@media (max-width: 520px) { .timeline.is-drawn::after { left: 4.2rem; } }
+.timeline.is-drawn li::before { z-index: 1; transform: scale(.45); transition: transform .5s var(--spring); }
+.timeline.is-drawn li.reached::before { transform: scale(1.3) rotate(22.5deg); }
+.timeline.is-drawn time { transition: color .4s var(--ease); color: rgba(215, 21, 53, .45); }
+.timeline.is-drawn li.reached time { color: var(--rouge); }
+
+/* 7. Sélecteur de parfum : la couleur glisse, les produits arrivent */
+.flavors.has-pill { position: relative; }
+.flavor-pill { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; clip-path: var(--oct); }
+.flavor-pill.ready { transition: transform .55s var(--spring), width .55s var(--spring), background-color .35s var(--ease); }
+.has-pill .flavor { z-index: 1; }
+.has-pill .flavor[aria-pressed="true"] { background: transparent; border-color: transparent; }
+.has-pill .flavor[aria-pressed="true"] .dot { transition: transform .6s var(--spring); }
+.flavor-grid > .pop { animation: pop .6s var(--spring) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes pop { from { opacity: 0; transform: translateY(16px) scale(.95); } }
+
+/* 8. Défilement infini : boîtes en fer et villes */
+.tin-marquee { display: grid; gap: 12px; margin-top: clamp(24px, 3vw, 40px); overflow: hidden; }
+.motion .tin-marquee { -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.marquee-track { display: flex; gap: 12px; width: max-content; }
+.tin-marquee img { flex: none; width: clamp(200px, 22vw, 320px); aspect-ratio: 4 / 3; object-fit: contain; background: #fff; padding: 14px; transition: transform .5s var(--spring); }
+.tin-marquee img:hover { transform: translateY(-6px) scale(1.04); }
+.is-running .marquee-track { animation: marquee 70s linear infinite; }
+.is-running .marquee-row--rev .marquee-track { animation-direction: reverse; animation-duration: 80s; }
+.is-running:hover .marquee-track, .is-paused .marquee-track, .is-offscreen .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 6px)); } }
+html:not(.motion) .marquee-track { flex-wrap: wrap; width: auto; padding-inline: var(--gutter); }
+html:not(.motion) .marquee-ctrl { display: none; }
+.marquee-ctrl { display: flex; justify-content: flex-end; margin-top: 14px; }
+.marquee-toggle { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; padding: 0 1rem; background: transparent; color: inherit; border: 1px solid currentColor; font: 500 .9rem/1 var(--sans); cursor: pointer; opacity: .75; transition: opacity .2s; }
+.marquee-toggle:hover { opacity: 1; }
+.marquee-toggle svg { width: 12px; height: 12px; fill: currentColor; }
+.close-marquee { position: relative; overflow: hidden; }
+.close-marquee .marquee-track { gap: 0; }
+.close-marquee span { font: 500 clamp(2.6rem, 9vw, 8.5rem)/1.05 var(--serif); letter-spacing: -.02em; padding-right: .5em; white-space: nowrap; color: #fff; }
+.close-marquee span:nth-child(3n+2) { color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .9); }
+.close-marquee.is-running .marquee-track { animation-duration: 45s; }
+html:not(.motion) .close-marquee span:nth-child(n+4) { display: none; }
+.cta-band .marquee-ctrl { padding-block: 0 clamp(20px, 3vw, 36px); display: flex; }
+.cta-band .wrap:first-of-type { padding-bottom: clamp(24px, 3vw, 40px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn .roll-b { display: none; }
+  .btn--ghost::before { transition: none; }
+}

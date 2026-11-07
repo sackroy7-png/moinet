@@ -914,6 +914,131 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 }
 /* Boîtes : format paysage, l'objet entier reste visible */
 @media (min-width: 900px) { .tin-wall img { aspect-ratio: 4 / 3; object-fit: contain; padding: 4%; } }
+
+/* ==========================================================================
+   Animations signature (assets/js/motion.js) — inspirations 21st.dev
+   Tout est conditionné à html.motion, posé par le script hors reduced-motion.
+   ========================================================================== */
+:root { --spring: cubic-bezier(.3, 1.35, .5, 1); --oct: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+
+/* 1. Titres : les mots sortent de leur masque */
+.motion .is-split .wm { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .14em; margin-bottom: -.14em; }
+.motion .is-split .wm > span { display: inline-block; transform: translateY(108%); animation: wordUp 1s var(--ease) forwards; animation-delay: calc(.12s + var(--i) * 55ms); }
+@keyframes wordUp { to { transform: none; } }
+.motion .hero-copy > h1, .motion .page-hero h1 { animation: none !important; opacity: 1 !important; }
+.motion [data-enter] .hero-copy > :not(h1) { animation-delay: calc(.35s + var(--words-delay, .4s)); }
+
+/* Héros : la photo s'ouvre depuis le centre, l'archive se « développe » */
+.motion [data-enter] .hero-media { animation: none; }
+.motion .hero-media .frame { animation: unfold 1.4s var(--ease) .1s both; }
+@keyframes unfold { from { clip-path: inset(18% 22% 18% 22%); } to { clip-path: inset(0); } }
+.motion .hero-media .frame img { animation: heroZoom 2.2s var(--ease) .1s both; }
+.motion .hero-archive { animation: develop 1.8s var(--ease) 1s both; }
+@keyframes develop {
+  0% { opacity: 0; transform: translateY(18px); filter: blur(8px) grayscale(1) brightness(1.7); }
+  45% { opacity: 1; }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+
+/* 2. Boutons : le libellé roule, un reflet traverse le bouton rouge */
+.btn { position: relative; isolation: isolate; }
+.btn .roll { display: inline-grid; overflow: hidden; line-height: 1.25; }
+.btn .roll-a, .btn .roll-b { grid-area: 1 / 1; transition: transform .5s var(--ease); }
+.btn .roll-b { transform: translateY(115%); }
+.btn:hover .roll-a { transform: translateY(-115%); }
+.btn:hover .roll-b { transform: none; }
+.motion .btn:not(.btn--ghost)::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .32) 50%, transparent 70%);
+  transform: translateX(-130%); transition: transform .9s var(--ease);
+}
+.motion .btn:not(.btn--ghost):hover::after { transform: translateX(130%); }
+.btn--ghost::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; background: var(--encre);
+  transform: scaleY(0); transform-origin: bottom; transition: transform .45s var(--ease);
+}
+.btn--ghost:hover { --bg: transparent; }
+.btn--ghost:hover::before { transform: scaleY(1); }
+.section--ink .btn--ghost::before { background: var(--creme); }
+
+/* 3. Boutons magnétiques */
+.magnetic { translate: var(--mx, 0px) var(--my, 0px); transition: translate .3s var(--ease), background-color .25s var(--ease), color .25s var(--ease); }
+
+/* 4. Halo qui suit le pointeur */
+.spot { position: relative; }
+.spot::before {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .35s var(--ease);
+  background: radial-gradient(260px circle at var(--sx, 50%) var(--sy, 50%), rgba(255, 236, 200, .28), transparent 70%);
+}
+.recipe.spot::before, .store.spot::before, .product.spot::before { background: radial-gradient(300px circle at var(--sx, 50%) var(--sy, 50%), rgba(215, 21, 53, .07), transparent 70%); }
+.spot:hover::before { opacity: 1; }
+.motion .tile .tile-label strong { transition: transform .45s var(--ease); }
+.motion .tile:hover .tile-label strong { transform: translateY(-4px); }
+
+/* 5. Liste des boutiques : aperçu de la devanture */
+.store-preview {
+  position: fixed; left: 0; top: 0; z-index: 60; width: clamp(220px, 20vw, 300px); aspect-ratio: 4 / 3;
+  pointer-events: none; clip-path: var(--oct); opacity: 0; scale: .55;
+  transition: opacity .25s var(--ease), scale .45s var(--spring);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6);
+}
+.store-preview.is-on { opacity: 1; scale: 1; }
+.store-preview img { width: 100%; height: 100%; object-fit: cover; }
+.motion .store-list[data-previews] li { transition: padding-left .4s var(--ease); }
+.motion .store-list[data-previews] li:hover { padding-left: 14px; }
+.motion .store-list[data-previews] li strong { transition: color .3s var(--ease); }
+.motion .store-list[data-previews] li:hover strong { color: #f3a6b2; }
+
+/* 6. Frise qui se trace */
+.timeline.is-drawn::after {
+  content: ""; position: absolute; left: 5.3rem; top: .6rem; bottom: .6rem; width: 2px; margin-left: -.5px;
+  background: var(--rouge); transform-origin: top; transform: scaleY(var(--draw, 0));
+}
+@media (max-width: 520px) { .timeline.is-drawn::after { left: 4.2rem; } }
+.timeline.is-drawn li::before { z-index: 1; transform: scale(.45); transition: transform .5s var(--spring); }
+.timeline.is-drawn li.reached::before { transform: scale(1.3) rotate(22.5deg); }
+.timeline.is-drawn time { transition: color .4s var(--ease); color: rgba(215, 21, 53, .45); }
+.timeline.is-drawn li.reached time { color: var(--rouge); }
+
+/* 7. Sélecteur de parfum : la couleur glisse, les produits arrivent */
+.flavors.has-pill { position: relative; }
+.flavor-pill { position: absolute; left: 0; top: 0; z-index: 0; pointer-events: none; clip-path: var(--oct); }
+.flavor-pill.ready { transition: transform .55s var(--spring), width .55s var(--spring), background-color .35s var(--ease); }
+.has-pill .flavor { z-index: 1; }
+.has-pill .flavor[aria-pressed="true"] { background: transparent; border-color: transparent; }
+.has-pill .flavor[aria-pressed="true"] .dot { transition: transform .6s var(--spring); }
+.flavor-grid > .pop { animation: pop .6s var(--spring) both; animation-delay: calc(var(--i) * 70ms); }
+@keyframes pop { from { opacity: 0; transform: translateY(16px) scale(.95); } }
+
+/* 8. Défilement infini : boîtes en fer et villes */
+.tin-marquee { display: grid; gap: 12px; margin-top: clamp(24px, 3vw, 40px); overflow: hidden; }
+.motion .tin-marquee { -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+.marquee-track { display: flex; gap: 12px; width: max-content; }
+.tin-marquee img { flex: none; width: clamp(200px, 22vw, 320px); aspect-ratio: 4 / 3; object-fit: contain; background: #fff; padding: 14px; transition: transform .5s var(--spring); }
+.tin-marquee img:hover { transform: translateY(-6px) scale(1.04); }
+.is-running .marquee-track { animation: marquee 70s linear infinite; }
+.is-running .marquee-row--rev .marquee-track { animation-direction: reverse; animation-duration: 80s; }
+.is-running:hover .marquee-track, .is-paused .marquee-track, .is-offscreen .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(calc(-50% - 6px)); } }
+html:not(.motion) .marquee-track { flex-wrap: wrap; width: auto; padding-inline: var(--gutter); }
+html:not(.motion) .marquee-ctrl { display: none; }
+.marquee-ctrl { display: flex; justify-content: flex-end; margin-top: 14px; }
+.marquee-toggle { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; padding: 0 1rem; background: transparent; color: inherit; border: 1px solid currentColor; font: 500 .9rem/1 var(--sans); cursor: pointer; opacity: .75; transition: opacity .2s; }
+.marquee-toggle:hover { opacity: 1; }
+.marquee-toggle svg { width: 12px; height: 12px; fill: currentColor; }
+.close-marquee { position: relative; overflow: hidden; }
+.close-marquee .marquee-track { gap: 0; }
+.close-marquee span { font: 500 clamp(2.6rem, 9vw, 8.5rem)/1.05 var(--serif); letter-spacing: -.02em; padding-right: .5em; white-space: nowrap; color: #fff; }
+.close-marquee span:nth-child(3n+2) { color: transparent; -webkit-text-stroke: 1.5px rgba(255, 255, 255, .9); }
+.close-marquee.is-running .marquee-track { animation-duration: 45s; }
+html:not(.motion) .close-marquee span:nth-child(n+4) { display: none; }
+.cta-band .marquee-ctrl { padding-block: 0 clamp(20px, 3vw, 36px); display: flex; }
+.cta-band .wrap:first-of-type { padding-bottom: clamp(24px, 3vw, 40px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn .roll-b { display: none; }
+  .btn--ghost::before { transition: none; }
+}
 </style>
  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Confiserie Moinet","alternateName":"Maison Moinet","url":"https://confiserie-moinet.fr/","logo":"https://confiserie-moinet.fr/wp-content/themes/confiserie-moinet/images/header-logo.png","foundingDate":"1852","foundingLocation":"Vichy","email":"contact@confiserie-moinet.fr","sameAs":["https://www.facebook.com/maisonmoinet/","https://www.instagram.com/maisonmoinet/"]}</script>
 <link rel="icon" href="data:image/png;base64,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">
@@ -997,13 +1122,13 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       <p>Depuis toujours, la Maison Moinet est à la fois fabricant et commerçant. Retrouvez nos douceurs dans la boutique historique de 1852, à Clermont-Ferrand et à Paris.</p>
       <a class="btn btn--light" href="#/magasins">Voir les adresses et horaires</a>
     </div>
-    <ul class="store-list">
-      <li><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital, la boutique historique</span></li>
-      <li><span class="city">Vichy</span><strong>Côté Sucré</strong><span class="addr">11, rue Georges-Clemenceau</span></li>
-      <li><span class="city">Vichy</span><strong>Pastillerie Moinet</strong><span class="addr">2, rue Président Roosevelt</span></li>
-      <li><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau, glaces artisanales</span></li>
-      <li><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale, décor Art nouveau</span></li>
-      <li><span class="city">Paris</span><strong>Maison Moinet</strong><span class="addr">45, rue Saint-Louis-en-l’Île</span></li>
+    <ul class="store-list" data-previews>
+      <li data-preview="assets/img/shop-vichy.webp"><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital, la boutique historique</span></li>
+      <li data-preview="assets/img/shop-cotesucre.webp"><span class="city">Vichy</span><strong>Côté Sucré</strong><span class="addr">11, rue Georges-Clemenceau</span></li>
+      <li data-preview="assets/img/shop-pastillerie.webp"><span class="city">Vichy</span><strong>Pastillerie Moinet</strong><span class="addr">2, rue Président Roosevelt</span></li>
+      <li data-preview="assets/img/shop-glaces.webp"><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau, glaces artisanales</span></li>
+      <li data-preview="assets/img/shop-clermont.webp"><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale, décor Art nouveau</span></li>
+      <li data-preview="assets/img/shop-paris.webp"><span class="city">Paris</span><strong>Maison Moinet</strong><span class="addr">45, rue Saint-Louis-en-l’Île</span></li>
     </ul>
   </div>
 </section>
@@ -1106,17 +1231,22 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       <h2 id="griffe-title">Les boîtes Moinet, gravées pour Vichy</h2>
       <p>Dès les années 1930, Rémi Moinet dessine boîtes et prospectus et commande au graveur Paul Devaux des modèles qui représentent Vichy à différentes époques&nbsp;: Art Déco, Ancien Régime, Médiéval.</p>
     </div>
-    <div class="tin-wall">
-      <img data-img="assets/img/identite-2.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde ornée de blasons, marquée Vichy 1852." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/identite-6.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde « Praline Vichy » décorée de roses de style Art Déco." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/identite-1.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte cylindrique de sucres d’orge digestifs Vichy-Santé." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/identite-5.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde orange « Les bonbons de Vichy de H. Moinet » illustrée de vues de Vichy." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/identite-3.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Papier illustré « Les Bonbons du Pays Bourbonnais de H. Moinet »." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/bourbonnaise.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Carton publicitaire « Tentation » : une Bourbonnaise tenant une boîte des bonbons de Vichy de H. Moinet." loading="lazy" width="667" height="933" style="object-position: 50% 18%">
-      <img data-img="assets/img/identite-4.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Carton publicitaire jaune « Pour votre plaisir, pour vos cadeaux, les bonbons de H. Moinet »." loading="lazy" width="900" height="700">
-      <img data-img="assets/img/cat-bicentenaire-de-la-pastille.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte en fer orange de pastilles éditée pour le bicentenaire de la pastille de Vichy." loading="lazy" width="700" height="700">
-    </div>
   </div>
+  <div class="tin-marquee" data-marquee>
+    <div class="marquee-row"><div class="marquee-track">
+          <img data-img="assets/img/identite-2.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde ornée de blasons, marquée Vichy 1852." loading="lazy" width="900" height="700">
+          <img data-img="assets/img/identite-6.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde « Praline Vichy » décorée de roses de style Art Déco." loading="lazy" width="900" height="700">
+          <img data-img="assets/img/identite-1.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte cylindrique de sucres d’orge digestifs Vichy-Santé." loading="lazy" width="900" height="700">
+          <img data-img="assets/img/identite-5.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte ronde orange « Les bonbons de Vichy de H. Moinet » illustrée de vues de Vichy." loading="lazy" width="900" height="700">
+    </div></div>
+    <div class="marquee-row marquee-row--rev"><div class="marquee-track">
+          <img data-img="assets/img/identite-3.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Papier illustré « Les Bonbons du Pays Bourbonnais de H. Moinet »." loading="lazy" width="900" height="700">
+          <img data-img="assets/img/bourbonnaise.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Carton publicitaire « Tentation » : une Bourbonnaise tenant une boîte des bonbons de Vichy de H. Moinet." loading="lazy" width="667" height="933" style="object-position: 50% 18%">
+          <img data-img="assets/img/identite-4.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Carton publicitaire jaune « Pour votre plaisir, pour vos cadeaux, les bonbons de H. Moinet »." loading="lazy" width="900" height="700">
+          <img data-img="assets/img/cat-bicentenaire-de-la-pastille.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Boîte en fer orange de pastilles éditée pour le bicentenaire de la pastille de Vichy." loading="lazy" width="700" height="700">
+    </div></div>
+  </div>
+  <div class="wrap marquee-ctrl"><button type="button" class="marquee-toggle" data-marquee-toggle aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg><span>Mettre en pause</span></button></div>
 </section>
 
 <section class="section screen" aria-labelledby="savoir-title">
@@ -1177,7 +1307,10 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       <p>Des sachets de pastilles aux coffrets cadeaux. Paiement sécurisé par CB, Visa ou Mastercard, expédition en Colissimo Suivi.</p>
     </div>
     <a class="btn btn--light" href="#/boutique">Commander en ligne</a>
-    <p class="close-word" aria-hidden="true"><span>Vichy</span> <span>Clermont</span> <span>Paris</span></p>
+  </div>
+  <div class="close-marquee" data-marquee aria-hidden="true"><div class="marquee-track"><span>Vichy</span><span>Clermont-Ferrand</span><span>Paris</span><span>Vichy</span><span>Clermont-Ferrand</span><span>Paris</span></div></div>
+  <div class="wrap marquee-ctrl marquee-ctrl--light"><button type="button" class="marquee-toggle" data-marquee-toggle aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12"/><rect x="9.5" y="2" width="3.5" height="12"/></svg><span>Mettre en pause</span></button>
+
   </div>
 </section>
 </div>
@@ -1961,6 +2094,172 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       grid.innerHTML = '<p class="empty">Le catalogue n’a pas pu être chargé. <a href="https://confiserie-moinet.fr/boutique-en-ligne/">Accéder à la boutique en ligne</a>.</p>';
     });
   }
+})();
+</script>
+<script>/* Maison Moinet — animations signature (sans dépendance)
+   Inspirations 21st.dev : text reveal, roll button, magnetic, spotlight card, hover preview,
+   marquee, scroll-drawn timeline, animated tabs. Sous prefers-reduced-motion : rien ne bouge,
+   tout est visible. */
+(() => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const doc = document.documentElement;
+  const img = (p) => (window.MOINET_IMG && window.MOINET_IMG[p]) || p;
+  if (reduce) { doc.classList.add('motion-off'); return; }
+  doc.classList.add('motion');
+
+  /* 1. Titres principaux : chaque mot sort de son masque, l'un après l'autre */
+  document.querySelectorAll('.hero h1, .page-hero h1').forEach((h) => {
+    if (h.dataset.split) return;
+    h.dataset.split = '1';
+    let i = 0;
+    const walk = (node) => {
+      [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.append(part); return; }
+            const outer = document.createElement('span'); outer.className = 'wm';
+            const inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--i', i++);
+            outer.append(inner); frag.append(outer);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
+      });
+    };
+    walk(h);
+    h.style.setProperty('--words', i);
+    h.classList.add('is-split');
+  });
+
+  /* 2. Boutons : le libellé roule vers le haut au survol */
+  document.querySelectorAll('.btn').forEach((b) => {
+    if (b.querySelector('.roll')) return;
+    const text = [...b.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent).join('').trim();
+    if (!text) return;
+    [...b.childNodes].filter((n) => n.nodeType === 3).forEach((n) => n.remove());
+    const roll = document.createElement('span'); roll.className = 'roll';
+    roll.innerHTML = `<span class="roll-a"></span><span class="roll-b" aria-hidden="true"></span>`;
+    roll.firstChild.textContent = text; roll.lastChild.textContent = text;
+    b.prepend(roll);
+  });
+
+  if (fine) {
+    /* 3. Boutons principaux magnétiques */
+    document.querySelectorAll('.hero-ctas .btn, .cta-band .btn').forEach((b) => {
+      b.classList.add('magnetic');
+      b.addEventListener('pointermove', (e) => {
+        const r = b.getBoundingClientRect();
+        b.style.setProperty('--mx', `${((e.clientX - r.left) / r.width - 0.5) * 10}px`);
+        b.style.setProperty('--my', `${((e.clientY - r.top) / r.height - 0.5) * 8}px`);
+      });
+      b.addEventListener('pointerleave', () => { b.style.setProperty('--mx', '0px'); b.style.setProperty('--my', '0px'); });
+    });
+
+    /* 4. Halo qui suit le pointeur sur les tuiles et les cartes */
+    document.querySelectorAll('.tile, .recipe, .store, .product').forEach((c) => {
+      c.classList.add('spot');
+      c.addEventListener('pointermove', (e) => {
+        const r = c.getBoundingClientRect();
+        c.style.setProperty('--sx', `${e.clientX - r.left}px`);
+        c.style.setProperty('--sy', `${e.clientY - r.top}px`);
+      });
+    });
+
+    /* 5. Liste des boutiques : la devanture suit le pointeur */
+    const list = document.querySelector('.store-list[data-previews]');
+    if (list) {
+      const fig = document.createElement('div'); fig.className = 'store-preview'; fig.setAttribute('aria-hidden', 'true');
+      const pic = document.createElement('img'); pic.alt = ''; fig.append(pic); document.body.append(fig);
+      let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false;
+      const loop = () => {
+        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
+        fig.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        raf = on || Math.abs(tx - x) > 0.5 ? requestAnimationFrame(loop) : 0;
+      };
+      list.querySelectorAll('li[data-preview]').forEach((li) => {
+        const src = img(li.dataset.preview);
+        new Image().src = src;
+        li.addEventListener('pointerenter', (e) => {
+          if (!on) { x = tx = e.clientX + 24; y = ty = e.clientY - 120; }
+          pic.src = src; on = true; fig.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(loop);
+        });
+        li.addEventListener('pointermove', (e) => { tx = e.clientX + 24; ty = e.clientY - 120; });
+      });
+      list.addEventListener('pointerleave', () => { on = false; fig.classList.remove('is-on'); });
+    }
+  }
+
+  /* 6. Frise : le fil se trace pendant que la section traverse l'écran */
+  document.querySelectorAll('.timeline').forEach((tl) => {
+    tl.classList.add('is-drawn');
+    const items = tl.querySelectorAll('li');
+    let ticking = false;
+    const paint = () => {
+      ticking = false;
+      const r = tl.getBoundingClientRect(), vh = window.innerHeight;
+      const p = Math.min(1, Math.max(0, (vh * 0.7 - r.top) / r.height));
+      tl.style.setProperty('--draw', p.toFixed(3));
+      items.forEach((li) => li.classList.toggle('reached', li.offsetTop + 24 <= p * r.height));
+    };
+    const on = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
+    window.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', on);
+    paint();
+  });
+
+  /* 7. Sélecteur de parfum : la pastille de couleur glisse d'un parfum à l'autre,
+        les produits arrivent les uns après les autres */
+  const flavors = document.querySelector('.flavors');
+  if (flavors) {
+    const pill = document.createElement('span'); pill.className = 'flavor-pill'; pill.setAttribute('aria-hidden', 'true');
+    flavors.append(pill); flavors.classList.add('has-pill');
+    /* origine réelle de la pastille (dans un fieldset, elle démarre sous la légende) */
+    let ox = 0, oy = 0;
+    const origin = () => {
+      const t = pill.style.transform; pill.style.transform = 'none';
+      const fr = flavors.getBoundingClientRect(), pr = pill.getBoundingClientRect();
+      ox = pr.left - fr.left; oy = pr.top - fr.top; pill.style.transform = t;
+    };
+    origin();
+    const move = () => {
+      const b = flavors.querySelector('.flavor[aria-pressed="true"]');
+      if (!b) return;
+      const fr = flavors.getBoundingClientRect(), br = b.getBoundingClientRect();
+      pill.style.width = `${br.width}px`; pill.style.height = `${br.height}px`;
+      pill.style.transform = `translate(${br.left - fr.left - ox}px, ${br.top - fr.top - oy}px)`;
+      pill.style.background = getComputedStyle(b).getPropertyValue('--f');
+    };
+    new MutationObserver(move).observe(flavors, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
+    window.addEventListener('resize', () => { pill.classList.remove('ready'); origin(); move(); requestAnimationFrame(() => pill.classList.add('ready')); });
+    requestAnimationFrame(() => { move(); requestAnimationFrame(() => pill.classList.add('ready')); });
+    const grid = document.querySelector('.flavor-grid');
+    if (grid) new MutationObserver(() => {
+      [...grid.children].forEach((c, i) => { c.style.setProperty('--i', i); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); });
+    }).observe(grid, { childList: true });
+  }
+
+  /* 8. Défilement infini (boîtes en fer, villes) : clones pour boucler, pause au survol
+        et bouton pause pour tout mouvement de plus de 5 secondes */
+  document.querySelectorAll('[data-marquee]').forEach((m) => {
+    m.querySelectorAll('.marquee-track').forEach((track) => {
+      [...track.children].forEach((c) => {
+        const k = c.cloneNode(true); k.setAttribute('aria-hidden', 'true');
+        k.querySelectorAll('img').forEach((i) => { i.alt = ''; });
+        if (k.tagName === 'IMG') k.alt = '';
+        track.append(k);
+      });
+    });
+    m.classList.add('is-running');
+    const btn = m.parentElement.querySelector('[data-marquee-toggle]');
+    if (btn) btn.addEventListener('click', () => {
+      const paused = m.classList.toggle('is-paused');
+      btn.setAttribute('aria-pressed', String(paused));
+      btn.querySelector('span').textContent = paused ? 'Relancer le défilement' : 'Mettre en pause';
+    });
+    if ('IntersectionObserver' in window) new IntersectionObserver(([en]) => m.classList.toggle('is-offscreen', !en.isIntersecting)).observe(m);
+  });
 })();
 </script>
 </body>

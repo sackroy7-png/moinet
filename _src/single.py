@@ -70,6 +70,7 @@ css = (ROOT / 'assets/css/main.css').read_text(encoding='utf-8')
 css = re.sub(r'url\("\.\./(fonts/[^"]+)"\)', lambda m: f'url("{b64("assets/" + m.group(1))}")', css)
 main_js = (ROOT / 'assets/js/main.js').read_text(encoding='utf-8')
 cat_js = (ROOT / 'assets/js/catalogue.js').read_text(encoding='utf-8')
+motion_js = (ROOT / 'assets/js/motion.js').read_text(encoding='utf-8')
 
 router = '''
 (() => {
@@ -115,6 +116,6 @@ out = (head + '<body>' + body
        + '<script>window.MOINET_SINGLE=true;window.MOINET_IMG=' + json.dumps(IMG) + ';'
        + 'document.querySelectorAll("img[data-img]").forEach(i=>{i.src=MOINET_IMG[i.dataset.img];});</script>\n'
        + '<script>window.MOINET_CATALOGUE=' + json.dumps(cat, ensure_ascii=False) + ';</script>\n'
-       + f'<script>{router}</script>\n<script>{main_js}</script>\n<script>{cat_js}</script>\n</body>\n</html>\n')
+       + f'<script>{router}</script>\n<script>{main_js}</script>\n<script>{cat_js}</script>\n<script>{motion_js}</script>\n</body>\n</html>\n')
 (ROOT / 'site-complet.html').write_text(out, encoding='utf-8')
 print('site-complet.html', round(len(out) / 1e6, 1), 'Mo,', len(IMG), 'images,', len(dups), 'id préfixés')

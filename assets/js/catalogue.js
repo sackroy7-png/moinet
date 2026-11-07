@@ -63,7 +63,7 @@
       ? `<del><span class="visually-hidden">Prix initial </span>${euro.format(p.regular)}</del><ins><span class="visually-hidden">Prix promotionnel </span>${euro.format(p.price)}</ins>`
       : euro.format(p.price);
     const img = p.img
-      ? `<img src="${esc(p.img)}" alt="" loading="lazy" decoding="async" width="480" height="480">`
+      ? `<img src="${esc((window.MOINET_IMG && window.MOINET_IMG[p.img]) || p.img)}" alt="" loading="lazy" decoding="async" width="480" height="480">`
       : '';
     const cartBtn = p.buy && p.stock
       ? `<a class="add-cart" href="${SHOP}/panier/?add-to-cart=${p.id}" rel="nofollow" aria-label="Ajouter « ${esc(p.name)} » au panier">${ICON_CART}</a>`
@@ -104,7 +104,7 @@
         rail.innerHTML = list.map((p) => card(p, 'pastilles')).join('');
         const label = picker.querySelector(`.flavor[data-flavor="${flavor}"]`).textContent.trim();
         status.textContent = `${list.length} présentation${list.length > 1 ? 's' : ''} au parfum ${label.toLowerCase()}, du sachet au coffret.`;
-        if (shopLink) shopLink.href = `boutique.html?cat=${flavor === 'sans-sucre' ? 'pastilles-sans-sucre' : 'pastilles'}${flavor === 'sans-sucre' ? '' : `&q=${flavor}`}`;
+        if (shopLink) shopLink.href = `${window.MOINET_SINGLE ? '#/boutique?' : 'boutique.html?'}cat=${flavor === 'sans-sucre' ? 'pastilles-sans-sucre' : 'pastilles'}${flavor === 'sans-sucre' ? '' : `&q=${flavor}`}`;
       } catch (e) {
         status.textContent = 'Le catalogue est momentanément indisponible.';
       }
@@ -121,7 +121,7 @@
     const search = shop.querySelector('#shop-search');
     const sort = shop.querySelector('#shop-sort');
     const count = shop.querySelector('.result-count');
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.MOINET_QUERY ? window.MOINET_QUERY() : location.search);
     const state = { cat: params.get('cat') || 'all', q: params.get('q') || '', sort: params.get('tri') || 'pertinence' };
     search.value = state.q; sort.value = state.sort;
     const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -152,7 +152,7 @@
           ? list.map((p) => card(p, state.cat !== 'all' && state.cat !== 'pour-offrir' ? state.cat : null)).join('')
           : '<p class="empty">Aucune douceur ne correspond à cette recherche. Essayez un autre mot ou une autre catégorie.</p>';
         count.textContent = `${list.length} produit${list.length > 1 ? 's' : ''}`;
-        if (push) {
+        if (push && !window.MOINET_SINGLE) {
           const u = new URLSearchParams();
           if (state.cat !== 'all') u.set('cat', state.cat);
           if (state.q) u.set('q', state.q);
@@ -167,6 +167,13 @@
       let t; search.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = search.value; apply(); }, 160); });
       sort.addEventListener('change', () => { state.sort = sort.value; apply(); });
       apply(false);
+      window.moinetShopSet = (q) => {
+        const u = new URLSearchParams(q);
+        state.cat = slugs.includes(u.get('cat')) ? u.get('cat') : 'all';
+        state.q = u.get('q') || ''; state.sort = u.get('tri') || 'pertinence';
+        search.value = state.q; sort.value = state.sort; apply(false);
+      };
+      if (window.MOINET_PENDING) { window.moinetShopSet(window.MOINET_PENDING); window.MOINET_PENDING = null; }
       chips.querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' });
     }).catch(() => {
       grid.innerHTML = '<p class="empty">Le catalogue n’a pas pu être chargé. <a href="https://confiserie-moinet.fr/boutique-en-ligne/">Accéder à la boutique en ligne</a>.</p>';

@@ -1,5 +1,8 @@
 # Refonte confiserie-moinet.fr — maquette fonctionnelle
 
+**Pour voir le site : ouvrez `site-complet.html`** (un seul fichier, les 6 pages, rien à installer).
+Il se régénère avec `python3 _src/build.py && python3 _src/single.py`.
+
 Voir `AGENTS.md` pour la direction artistique, les skills intégrés et les règles du projet.
 
 ## Pages

@@ -148,7 +148,7 @@ def page(meta, main, slug):
     extra_head = meta.get("head", "")
     scripts = '<script src="assets/js/main.js" defer></script>'
     if meta.get("catalogue") == "yes":
-        scripts += '\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
+        scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
     return f'''<!doctype html>
 <html lang="fr" data-type="place">
 <head>

@@ -48,7 +48,8 @@
   function loadCatalogue() {
     if (!cache) {
       const base = document.querySelector('script[data-catalogue]')?.dataset.catalogue || 'assets/data/catalogue.json';
-      cache = (LIVE ? loadLive().catch(() => fetch(base).then((r) => r.json())) : fetch(base).then((r) => r.json()));
+      const local = () => (window.MOINET_CATALOGUE ? Promise.resolve(window.MOINET_CATALOGUE) : fetch(base).then((r) => r.json()));
+      cache = LIVE ? loadLive().catch(local) : local();
     }
     return cache;
   }

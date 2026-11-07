@@ -37,6 +37,13 @@ Les `*.html` à la racine sont générés.
    interaction, performance) appliquée ; recommandation produit « heritage / storytelling +
    hero-centric », adresses et horaires bien visibles.
 
+3. **Révision frontend-design + ux-copy (nov. 2026)**. Retrait des tics de gabarit : plus de
+   capitales espacées (navigation, boutons, étiquettes), plus de surtitre à filet au-dessus de chaque
+   titre, plus de mot en italique rouge dans les titres, plus de flèche dans les boutons, plus de
+   « · » dans les textes. Le bandeau de chiffres du héros (1852 / 7 / 3 / 6) et le sceau « 1852 »
+   sont remplacés par l'adresse et les horaires de la boutique historique. Cibles tactiles de 44 px.
+   Toutes ces règles sont en fin de `assets/css/main.css` (« Révision skills »).
+
 ## À ne pas casser
 
 - Panier, compte, commandes, CGV et mentions légales restent ceux de WooCommerce

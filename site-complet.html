@@ -117,18 +117,16 @@ h1 { font-size: clamp(2.5rem, 6.2vw, 5.4rem); }
 h2 { font-size: clamp(2rem, 4.2vw, 3.4rem); }
 h3 { font-size: clamp(1.35rem, 2vw, 1.7rem); }
 p { margin: 0 0 1em; text-wrap: pretty; }
-em.accent, .accent { font-style: italic; color: var(--rouge); }
+em.accent, .accent { font-style: normal; color: inherit; }
 
 .eyebrow {
   display: inline-flex; align-items: center; gap: .75rem;
   font: 500 .78rem/1 var(--sans);
-  letter-spacing: .22em; text-transform: uppercase;
+  letter-spacing: .005em;
   color: var(--rouge);
   margin: 0 0 1.25rem;
 }
-.eyebrow::before {
-  content: ""; width: 28px; height: 1px; background: currentColor;
-}
+.eyebrow::before { content: none; }
 .lead { font-size: clamp(1.1rem, 1.5vw, 1.3rem); line-height: 1.55; color: var(--encre-2); max-width: 38em; }
 .muted { color: var(--encre-2); }
 .small { font-size: .875rem; }
@@ -188,7 +186,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
   min-height: 52px; padding: .85rem 1.6rem;
   background: var(--bg); color: var(--fg);
   border: 0; cursor: pointer; text-decoration: none;
-  font: 500 .95rem/1 var(--sans); letter-spacing: .06em; text-transform: uppercase;
+  font: 500 .95rem/1 var(--sans); letter-spacing: .005em;
   --cut: 10px;
   clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut),
     100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, var(--cut) 100%,
@@ -209,7 +207,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 
 .link-arrow {
   display: inline-flex; align-items: center; gap: .5rem;
-  font: 500 .85rem/1.2 var(--sans); letter-spacing: .14em; text-transform: uppercase;
+  font: 500 .85rem/1.2 var(--sans); letter-spacing: .005em;
   text-decoration: none; color: var(--rouge);
   padding-block: .5rem;
 }
@@ -241,7 +239,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .brand img { width: 84px; height: auto; transition: width .3s var(--ease); }
 .is-scrolled .brand img { width: 72px; }
 .brand-tag {
-  display: none; font: 400 .72rem/1.25 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--encre-2);
+  display: none; font: 400 .72rem/1.25 var(--sans); letter-spacing: .005em; color: var(--encre-2);
 }
 @media (min-width: 1240px) { .brand-tag { display: block; } }
 
@@ -249,7 +247,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .main-nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: clamp(.75rem, 2vw, 2rem); }
 .main-nav a {
   position: relative; display: block; padding: .5rem 0;
-  font: 500 .86rem/1 var(--sans); letter-spacing: .12em; text-transform: uppercase; text-decoration: none;
+  font: 500 .86rem/1 var(--sans); letter-spacing: .005em; text-decoration: none;
 }
 .main-nav a::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--rouge);
@@ -326,7 +324,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
   display: grid; place-items: center; text-align: center;
   background: var(--rouge); color: #fff;
   clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
-  font: 500 .66rem/1.2 var(--sans); letter-spacing: .18em; text-transform: uppercase;
+  font: 500 .66rem/1.2 var(--sans); letter-spacing: .005em;
 }
 .hero-seal strong { display: block; font: 500 clamp(1.6rem, 3.2vw, 2.1rem)/1 var(--serif); letter-spacing: 0; margin: .15rem 0; }
 @media (prefers-reduced-motion: no-preference) {
@@ -349,7 +347,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
   .facts > div:nth-child(n+3) { border-top: 0; }
 }
 .facts strong { display: block; font: 500 clamp(2rem, 4vw, 2.8rem)/1 var(--serif); color: var(--rouge); }
-.facts span { font: 400 .82rem/1.3 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--encre-2); }
+.facts span { font: 400 .82rem/1.3 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 
 /* Réassurance */
 .assurances { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem 2rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
@@ -366,7 +364,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .pastille-visual figcaption { margin-top: .75rem; font-size: .85rem; color: var(--encre-2); }
 
 .flavors { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0 1.25rem; padding: 0; border: 0; }
-.flavors legend { width: 100%; margin-bottom: .75rem; font: 500 .8rem/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--encre-2); }
+.flavors legend { width: 100%; margin-bottom: .75rem; font: 500 .8rem/1 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 .flavor {
   --f: var(--menthe);
   position: relative; display: inline-flex; align-items: center; gap: .55rem;
@@ -408,7 +406,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .product-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
 @media (prefers-reduced-motion: no-preference) { .product:hover .product-img img { transform: scale(1.04); } }
 .product-body { display: flex; flex-direction: column; gap: .4rem; padding: 1rem 1rem 1.1rem; flex: 1; }
-.product-cat { font: 500 .7rem/1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--encre-2); }
+.product-cat { font: 500 .7rem/1.2 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 .product h3 { font: 500 1.08rem/1.25 var(--serif); margin: 0; letter-spacing: 0; }
 .product h3 a { text-decoration: none; }
 .product h3 a::before { content: ""; position: absolute; inset: 0; z-index: 0; } /* carte cliquable */
@@ -428,7 +426,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .badge {
   position: absolute; top: 10px; left: 10px; z-index: 1;
   background: var(--rouge); color: #fff; padding: .3rem .55rem;
-  font: 500 .68rem/1 var(--sans); letter-spacing: .12em; text-transform: uppercase;
+  font: 500 .68rem/1 var(--sans); letter-spacing: .005em;
 }
 .badge--muted { background: var(--encre-2); }
 
@@ -444,7 +442,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 14, 12, 0) 40%, rgba(20, 14, 12, .78)); }
 .tile-label { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: .95rem; }
 .tile-label strong { display: block; font: 500 clamp(1.2rem, 1.8vw, 1.6rem)/1.1 var(--serif); }
-.tile-label span { font: 400 .8rem/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+.tile-label span { font: 400 .8rem/1.3 var(--sans); letter-spacing: .005em; opacity: .85; }
 .tile:hover { color: #fff; }
 @media (prefers-reduced-motion: no-preference) { .tile:hover img { transform: scale(1.05); } }
 .tile:focus-visible { outline-offset: 4px; }
@@ -519,7 +517,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .store-img { aspect-ratio: 16 / 10; overflow: hidden; }
 .store-img img { width: 100%; height: 100%; object-fit: cover; }
 .store-body { padding: 1.3rem 1.3rem 1.5rem; display: flex; flex-direction: column; gap: .2rem; }
-.store-city { font: 500 .74rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--rouge); }
+.store-city { font: 500 .74rem/1 var(--sans); letter-spacing: .005em; color: var(--rouge); }
 .store h3 { margin: .35rem 0 .4rem; font-size: 1.5rem; }
 .store address { font-style: normal; }
 .store .since { font: italic 400 .95rem/1.3 var(--serif); color: var(--encre-2); margin-bottom: .5rem; }
@@ -527,7 +525,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 .hours dt { font-weight: 500; }
 .hours dd { margin: 0 0 .35rem; color: var(--encre-2); }
 .store-actions { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; margin-top: auto; }
-.store-actions a { font: 500 .85rem/1.2 var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--rouge); text-decoration: none; padding-block: .5rem; }
+.store-actions a { font: 500 .85rem/1.2 var(--sans); letter-spacing: .005em; color: var(--rouge); text-decoration: none; padding-block: .5rem; }
 .store-actions a:hover { text-decoration: underline; }
 
 .store-list { list-style: none; margin: 0; padding: 0; }
@@ -536,14 +534,14 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
   padding: 1rem 0; border-bottom: 1px solid rgba(250, 245, 236, .2);
 }
 .store-list strong { font: 500 1.25rem/1.2 var(--serif); }
-.store-list .city { font: 500 .74rem/1 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: #f3a6b2; }
+.store-list .city { font: 500 .74rem/1 var(--sans); letter-spacing: .005em; color: #f3a6b2; }
 .store-list .addr { color: rgba(250, 245, 236, .75); font-size: .95rem; }
 
 /* ---------- Citation presse ---------- */
 .quote { max-width: 60rem; margin-inline: auto; text-align: center; }
 .quote blockquote { margin: 0; font: italic 400 clamp(1.3rem, 2.4vw, 2rem)/1.45 var(--serif); }
 .quote blockquote::before { content: "«"; display: block; font-size: 4rem; line-height: .6; color: var(--rouge); margin-bottom: 1rem; font-style: normal; }
-.quote figcaption { margin-top: 1.5rem; font: 500 .82rem/1.4 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--encre-2); }
+.quote figcaption { margin-top: 1.5rem; font: 500 .82rem/1.4 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 
 /* ---------- Recettes ---------- */
 .recipes { display: grid; gap: clamp(16px, 2.5vw, 28px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
@@ -578,7 +576,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 @media (min-width: 860px) { .gen { grid-template-columns: 13rem 1fr; } }
 .gen-head time { display: block; font: 500 2.2rem/1 var(--serif); color: var(--rouge); }
 .gen-head h3 { margin: .4rem 0 0; font-size: 1.35rem; }
-.gen-head span { display: block; margin-top: .35rem; font: 500 .72rem/1.3 var(--sans); letter-spacing: .18em; text-transform: uppercase; color: var(--encre-2); }
+.gen-head span { display: block; margin-top: .35rem; font: 500 .72rem/1.3 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 .gen p { color: var(--encre-2); margin: 0 0 .8em; max-width: 46rem; }
 
 .figure-row { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }
@@ -670,7 +668,7 @@ em.accent, .accent { font-style: italic; color: var(--rouge); }
 @media (min-width: 900px) { .footer-top { grid-template-columns: 1.3fr repeat(3, 1fr); } }
 .footer-brand img { width: 110px; margin-bottom: 1rem; }
 .footer-brand p { max-width: 26rem; }
-.site-footer h2 { font: 500 .78rem/1 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: #f3a6b2; margin-bottom: 1.1rem; }
+.site-footer h2 { font: 500 .78rem/1 var(--sans); letter-spacing: .005em; color: #f3a6b2; margin-bottom: 1.1rem; }
 .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; }
 .site-footer a { text-decoration: none; display: inline-block; padding-block: .3rem; }
 .site-footer a:hover { color: #fff; text-decoration: underline; }
@@ -797,11 +795,11 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 .heritage-media { position: static; }
 
 /* Moment typographique « word-highlight » */
-.quote-title { font: 500 .8rem/1.3 var(--sans); letter-spacing: .2em; text-transform: uppercase; color: var(--rouge); margin-bottom: 2rem; }
+.quote-title { font: 500 .8rem/1.3 var(--sans); letter-spacing: .005em; color: var(--rouge); margin-bottom: 2rem; }
 .quote blockquote { font-size: clamp(1.7rem, 3.6vw, 3.1rem); line-height: 1.3; }
 [data-words] .w { transition: color .35s var(--ease); color: color-mix(in srgb, var(--encre) 22%, transparent); }
 [data-words] .w.on { color: var(--encre); }
-.quote-source { margin-top: 2rem; font: 500 .85rem/1.4 var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--encre-2); }
+.quote-source { margin-top: 2rem; font: 500 .85rem/1.4 var(--sans); letter-spacing: .005em; color: var(--encre-2); }
 
 /* Clôture : le nom des villes posé en grand */
 .cta-band .wrap { grid-template-columns: 1fr; }
@@ -869,13 +867,60 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
   .nav-toggle { display: inline-grid; }
 }
 .main-nav a { white-space: nowrap; }
+
+/* ==========================================================================
+   Révision skills (nov. 2026) : frontend-design, ux-copy, tasteskill
+   ========================================================================== */
+/* Étiquettes : casse normale, pas d'interlettrage, plus de filet décoratif */
+.eyebrow { font: 500 .95rem/1.3 var(--sans); letter-spacing: 0; }
+.btn { letter-spacing: 0; font-size: 1rem; }
+.main-nav a { font-size: .95rem; letter-spacing: 0; }
+.brand-tag { letter-spacing: 0; font-size: .8rem; }
+/* Cibles tactiles de 44 px minimum */
+.main-nav a { min-height: 44px; display: inline-flex; align-items: center; }
+.topbar a { display: inline-flex; align-items: center; min-height: 44px; }
+.topbar { padding-block: 0; }
+.store-actions a, .contact-phones a, .breadcrumb a, .site-footer a { min-height: 44px; display: inline-flex; align-items: center; }
+/* Héros : une adresse et des horaires plutôt qu'une rangée de chiffres */
+.hero-visit { margin-top: clamp(24px, 3.5vw, 40px); padding-top: 1.1rem; border-top: 1px solid var(--filet); color: var(--encre-2); max-width: 38em; }
+.hero-visit strong { color: var(--encre); font-weight: 500; }
+/* Mur de boîtes : deux rangées pleines de trois */
+@media (min-width: 900px) { .tin-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.section-head--split { align-items: end; }
+/* Sections de deux écrans pleins (accueil) */
+@media (min-width: 768px) { main > section.screen--2 { min-height: calc(2 * (100svh - var(--header-h))); } }
+/* Frise de l'accueil : tient dans un écran */
+@media (min-width: 960px) {
+  .heritage .timeline li { padding-block: .55rem; }
+  .heritage .timeline h3 { font-size: 1.2rem; margin-bottom: .15em; }
+  .heritage .timeline p { margin: 0; font-size: .95rem; }
+}
+/* Mur de boîtes : 3 colonnes seulement quand il y a 6 boîtes */
+@media (min-width: 900px) {
+  .tin-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .tin-wall:has(> :nth-child(6):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+/* Cibles tactiles restantes */
+.btn--sm { min-height: 44px; }
+.chip, .link-arrow, a[href^="tel:"] { min-height: 44px; display: inline-flex; align-items: center; }
+/* Histoire (accueil) : la photo d'archive occupe toute la hauteur de la colonne */
+@media (min-width: 960px) {
+  .heritage { align-items: stretch; }
+  .heritage-media, .heritage-media img { height: 100%; }
+  .heritage-media img { object-fit: cover; }
+  .heritage h2 { font-size: clamp(2rem, 3.2vw, 2.9rem); }
+  .heritage .timeline { margin-bottom: 1.25rem; }
+  main > section.screen:has(.heritage) { padding-block: clamp(48px, 6vw, 88px); }
+}
+/* Boîtes : format paysage, l'objet entier reste visible */
+@media (min-width: 900px) { .tin-wall img { aspect-ratio: 4 / 3; object-fit: contain; padding: 4%; } }
 </style>
  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Confiserie Moinet","alternateName":"Maison Moinet","url":"https://confiserie-moinet.fr/","logo":"https://confiserie-moinet.fr/wp-content/themes/confiserie-moinet/images/header-logo.png","foundingDate":"1852","foundingLocation":"Vichy","email":"contact@confiserie-moinet.fr","sameAs":["https://www.facebook.com/maisonmoinet/","https://www.instagram.com/maisonmoinet/"]}</script>
 <link rel="icon" href="data:image/png;base64,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">
 </head>
 <body>
 <a class="skip-link" href="#contenu">Aller au contenu</a>
-<aside class="topbar" aria-label="Informations pratiques"><span class="tb-long">Livraison à domicile en Colissimo Suivi · Paiement sécurisé · </span><a href="#/magasins">6 boutiques à Vichy, Clermont-Ferrand et Paris</a></aside>
+<aside class="topbar" aria-label="Informations pratiques"><span class="tb-long">Livraison à domicile en Colissimo Suivi et paiement sécurisé. </span><a href="#/magasins">6 boutiques à Vichy, Clermont-Ferrand et Paris</a></aside>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="#/accueil" aria-label="Maison Moinet, confiseur à Vichy depuis 1852 — accueil">
@@ -924,27 +969,19 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="hero" data-enter aria-labelledby="hero-title">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <p class="eyebrow">Maison Moinet · Vichy</p>
-      <h1 id="hero-title">Confiserie artisanale à Vichy, <em class="accent">en famille depuis&nbsp;1852.</em></h1>
+      <h1 id="hero-title">Confiserie artisanale à Vichy, en famille depuis&nbsp;1852.</h1>
       <p class="lead">Sept générations de confiseurs&nbsp;: pastilles du Bassin de Vichy, bonbons glacés façonnés à la main, pâtes de fruits d’Auvergne et boîtes en fer à collectionner.</p>
       <div class="hero-ctas">
-        <a class="btn" href="#/boutique">Commander en ligne
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn" href="#/boutique">Commander en ligne</a>
         <a class="btn btn--ghost" href="#/magasins">Trouver une boutique</a>
       </div>
-      <div class="facts" role="list">
-        <div role="listitem"><strong>1852</strong><span>Fondation</span></div>
-        <div role="listitem"><strong>7</strong><span>Générations</span></div>
-        <div role="listitem"><strong>3</strong><span>Sites de production</span></div>
-        <div role="listitem"><strong>6</strong><span>Boutiques</span></div>
-      </div>
+      <p class="hero-visit"><strong>Boutique historique</strong>, 4, rue de la Source de l’Hôpital à Vichy. Du lundi au samedi, 9h30–12h et 14h30–19h.</p>
     </div>
     <div class="hero-media">
       <div class="frame cut cut-lg">
         <img data-img="assets/img/hero.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="2000" height="1250" fetchpriority="high"
              alt="Intérieur de la confiserie Moinet : étagères de boîtes en fer bleues et rouges, sachets de bonbons et paniers garnis.">
       </div>
-      <div class="hero-seal" aria-hidden="true"><span>Fabrication<strong>1852</strong>maison</span></div>
       <div class="hero-archive">
         <img data-img="assets/img/facade-1900.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="900" height="768"
              alt="Photographie d’archive en noir et blanc de la devanture « Moinet Confiseur – Confiserie H. Moinet », avec trois femmes devant la vitrine.">
@@ -961,24 +998,24 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       <a class="btn btn--light" href="#/magasins">Voir les adresses et horaires</a>
     </div>
     <ul class="store-list">
-      <li><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital · la boutique historique</span></li>
+      <li><span class="city">Vichy</span><strong>Confiserie Moinet</strong><span class="addr">4, rue de la Source de l’Hôpital, la boutique historique</span></li>
       <li><span class="city">Vichy</span><strong>Côté Sucré</strong><span class="addr">11, rue Georges-Clemenceau</span></li>
       <li><span class="city">Vichy</span><strong>Pastillerie Moinet</strong><span class="addr">2, rue Président Roosevelt</span></li>
-      <li><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau · glaces artisanales</span></li>
-      <li><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale · décor Art nouveau</span></li>
+      <li><span class="city">Vichy</span><strong>La Galerie des Glaces</strong><span class="addr">1, rue Georges-Clemenceau, glaces artisanales</span></li>
+      <li><span class="city">Clermont-Ferrand</span><strong>Confiserie Moinet</strong><span class="addr">1, place Royale, décor Art nouveau</span></li>
       <li><span class="city">Paris</span><strong>Maison Moinet</strong><span class="addr">45, rue Saint-Louis-en-l’Île</span></li>
     </ul>
   </div>
 </section>
 
-<section class="section section--paper screen" aria-labelledby="pastille-title">
+<section class="section section--paper screen screen--2" aria-labelledby="pastille-title">
   <div class="wrap pastille-grid">
     <div class="pastille-visual">
       <img class="cut" data-img="assets/img/savoir-2.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="1000" height="667" loading="lazy"
            alt="Gros plan sur des pastilles octogonales blanches gravées « Bassin de Vichy », faites avec les sels minéraux de l’eau de source.">
     </div>
     <div data-flavor-picker>
-      <h2 id="pastille-title">La pastille du <em class="accent">Bassin de Vichy</em></h2>
+      <h2 id="pastille-title">La pastille du Bassin de Vichy</h2>
       <p class="lead">En 1932, Rémi Moinet achète la Source Roger, à Hauterive, pour en extraire les sels minéraux. Aujourd’hui, les pastilles représentent 80&nbsp;% de notre production.</p>
       <fieldset class="flavors">
         <legend>Choisissez votre parfum</legend>
@@ -995,7 +1032,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
   </div>
 </section>
 
-<section class="section screen" aria-labelledby="specialites-title">
+<section class="section screen screen--2" aria-labelledby="specialites-title">
   <div class="wrap">
     <div class="section-head section-head--split">
       <h2 id="specialites-title">Les spécialités d’Auvergne et du Bourbonnais</h2>
@@ -1089,7 +1126,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
            alt="Mains d’un confiseur façonnant des bonbons un à un sur un plan de travail.">
     </div>
     <div>
-      <h2 id="savoir-title">Des bonbons glacés façonnés un à un, <em class="accent">comme des bijoux</em></h2>
+      <h2 id="savoir-title">Des bonbons glacés façonnés un à un, comme des bijoux</h2>
       <p class="muted">Nos produits sont garantis « made in France », et même « made in Auvergne ». La réalisation des bonbons glacés, très technique, demande plusieurs étapes de façonnage à la main.</p>
       <ul class="checks">
         <li>Bonbons glacés, nougats, caramels et pralines élaborés de manière traditionnelle</li>
@@ -1105,7 +1142,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
   <div class="wrap quote">
     <h2 id="presse-title" class="quote-title">Le Petit Futé, à propos de la Maison Moinet</h2>
     <blockquote><p data-words>C’est dans cette confiserie ayant gardé son âme d’antan que l’on trouve la célèbre pastille du Bassin de Vichy en versions anis, citron, orange et menthe.</p></blockquote>
-    <p class="quote-source">Le Petit Futé · 2026 — <a href="https://www.petitfute.com/v3514-vichy-03200/c650-produits-gourmands-vins/c1107-pains-gateaux-chocolats-glaces/c669-confiserie-dragees/1638076-confiserie-maison-moinet.html" rel="noopener">Lire l’article du Petit Futé</a></p>
+    <p class="quote-source">Le Petit Futé, 2026 — <a href="https://www.petitfute.com/v3514-vichy-03200/c650-produits-gourmands-vins/c1107-pains-gateaux-chocolats-glaces/c669-confiserie-dragees/1638076-confiserie-maison-moinet.html" rel="noopener">Lire l’article du Petit Futé</a></p>
   </div>
 </section>
 
@@ -1148,8 +1185,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="page-hero screen">
   <div class="wrap">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">La Maison</li></ol></nav>
-    <p class="eyebrow">Depuis 1852</p>
-    <h1>Une maison, une famille, <em class="accent">sept générations</em></h1>
+    <h1>Une maison, une famille, sept générations</h1>
     <p class="lead">La Maison Moinet est la plus ancienne confiserie de Vichy toujours en activité&nbsp;: l’unique fabrique familiale, artisanale, indépendante et locale de la ville.</p>
   </div>
   <div class="wrap page-banner"><img class="cut cut-lg" data-img="assets/img/maison-2.webp" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" width="1500" height="1000" fetchpriority="high"
@@ -1176,7 +1212,6 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
   <div class="wrap">
     <div class="section-head section-head--split">
       <div>
-        <p class="eyebrow">Histoire de la maison</p>
         <h2 id="maison-histoire-title">Une affaire de famille</h2>
       </div>
       <p class="muted">Plusieurs générations ont apporté leur pierre à l’édifice familial, de l’atelier de l’arrière-boutique à la pastillerie du Bioparc.</p>
@@ -1240,7 +1275,6 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="section section--ink screen" aria-labelledby="identite-title">
   <div class="wrap section-head section-head--split">
     <div>
-      <p class="eyebrow">Une identité visuelle unique</p>
       <h2 id="identite-title">La griffe Moinet</h2>
     </div>
     <div>
@@ -1260,7 +1294,6 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="section screen" id="production" aria-labelledby="production-title">
   <div class="wrap">
     <div class="section-head">
-      <p class="eyebrow">La production</p>
       <h2 id="production-title">Trois sites dans le bassin de Vichy</h2>
     </div>
     <div class="gen-list">
@@ -1292,7 +1325,6 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="section screen section--paper" id="points-de-vente" aria-labelledby="pdv-title">
   <div class="wrap split">
     <div>
-      <p class="eyebrow">Les points de vente</p>
       <h2 id="pdv-title">Fabricant et commerçant</h2>
       <p class="muted">La Maison Moinet a toujours souhaité conserver cette double casquette. Ses boutiques se sont multipliées au fil du temps.</p>
       <a class="btn" href="#/magasins">Adresses et horaires</a>
@@ -1312,8 +1344,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="page-hero screen">
   <div class="wrap">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Savoir-faire</li></ol></nav>
-    <p class="eyebrow">Artisanat français</p>
-    <h1>Made in France, et même <em class="accent">made in Auvergne</em></h1>
+    <h1>Made in France, et même made in Auvergne</h1>
     <p class="lead">Moinet assure une fabrication artisanale et française depuis 1852, transmise de génération en génération.</p>
   </div>
   <div class="wrap split" style="margin-top:clamp(28px,4vw,48px)">
@@ -1351,7 +1382,6 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
   <div class="wrap">
     <div class="section-head section-head--split">
       <div>
-        <p class="eyebrow">Large sélection</p>
         <h2 id="selection-title">Une gamme de spécialités régionales</h2>
       </div>
       <p class="muted">Sucres d’orge de Vichy, pâtes de fruits d’Auvergne, bonbons glacés du pays bourbonnais, menthe fondante, fondants aux fruits, gommes véritables, marrons glacés, gels de fruits, sucres cuits, chocolats, caramels, nougats, pralines.</p>
@@ -1382,10 +1412,9 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Boutique en ligne</li></ol></nav>
     <div class="section-head section-head--split" style="margin-bottom:0">
       <div>
-        <p class="eyebrow">Boutique en ligne</p>
-        <h1 style="max-width:none">Toute la confiserie, <em class="accent">livrée chez vous</em></h1>
+        <h1 style="max-width:none">Toute la confiserie, livrée chez vous</h1>
       </div>
-      <p class="muted">Paiement sécurisé par carte · Expédition à domicile en Colissimo Suivi · Fabrication française depuis 1852.</p>
+      <p class="muted">Paiement sécurisé par carte et livraison à domicile en Colissimo Suivi. Fabriqué à Vichy depuis 1852.</p>
     </div>
   </div>
 </section>
@@ -1426,8 +1455,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="page-hero">
   <div class="wrap">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Nos boutiques</li></ol></nav>
-    <p class="eyebrow">Vichy · Clermont-Ferrand · Paris</p>
-    <h1>Nos <em class="accent">six</em> boutiques</h1>
+    <h1>Nos six boutiques</h1>
     <p class="lead">De la boutique historique de 1852 au décor Art nouveau de la place Royale, venez découvrir nos douceurs sur place.</p>
     <nav aria-label="Aller à une ville" class="hero-ctas" style="margin-top:1.5rem">
       <a class="btn btn--ghost btn--sm" href="#vichy-historique">Vichy</a>
@@ -1466,7 +1494,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
     <div class="store-body">
       <span class="store-city">Vichy</span>
       <h3>Pastillerie Moinet</h3>
-      <p class="since">Depuis mars 2026 · pastilles et univers Moinet</p>
+      <p class="since">Depuis mars 2026, pastilles et univers Moinet</p>
       <address>2, rue Président Roosevelt<br>03200 Vichy</address>
       <dl class="hours"><dt>Du mercredi au samedi</dt><dd>11h–13h et 14h–19h</dd><dt>Dimanche</dt><dd>15h–19h</dd></dl>
       <div class="store-actions"><a href="https://www.google.com/maps/search/?api=1&query=Pastillerie%20Moinet%202%2C%20rue%20Pr%C3%A9sident%20Roosevelt%2C%2003200%20Vichy" rel="noopener">Itinéraire</a></div>
@@ -1488,7 +1516,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
     <div class="store-body">
       <span class="store-city">Clermont-Ferrand</span>
       <h3>Confiserie Moinet</h3>
-      <p class="since">Depuis 2016 · décor Art nouveau inscrit aux monuments historiques</p>
+      <p class="since">Depuis 2016, décor Art nouveau inscrit aux monuments historiques</p>
       <address>1, place Royale<br>63000 Clermont-Ferrand</address>
       <dl class="hours"><dt>Du mardi au samedi</dt><dd>11h–13h et 14h–19h</dd></dl>
       <div class="store-actions"><a href="https://www.google.com/maps/search/?api=1&query=Confiserie%20Moinet%201%2C%20place%20Royale%2C%2063000%20Clermont-Ferrand" rel="noopener">Itinéraire</a><a href="tel:+33473242091">Appeler le 04 73 24 20 91</a></div>
@@ -1499,7 +1527,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
     <div class="store-body">
       <span class="store-city">Paris</span>
       <h3>Maison Moinet</h3>
-      <p class="since">Depuis 2015 · à deux pas de Notre-Dame</p>
+      <p class="since">Depuis 2015, à deux pas de Notre-Dame</p>
       <address>45, rue Saint-Louis-en-l’Île<br>75004 Paris</address>
       <dl class="hours"><dt>Du mardi au samedi</dt><dd>11h–13h30 et 14h30–19h</dd><dt>Dimanche</dt><dd>Fermé (ouverture certains dimanches, 14h30–18h)</dd></dl>
       <div class="store-actions"><a href="https://www.google.com/maps/search/?api=1&query=Maison%20Moinet%2045%2C%20rue%20Saint-Louis-en-l%E2%80%99%C3%8Ele%2C%2075004%20Paris" rel="noopener">Itinéraire</a><a href="tel:+33142028718">Appeler le 01 42 02 87 18</a></div>
@@ -1513,8 +1541,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
 <section class="page-hero">
   <div class="wrap">
     <nav class="breadcrumb" aria-label="Fil d’Ariane"><ol><li><a href="#/accueil">Accueil</a></li><li aria-current="page">Contact</li></ol></nav>
-    <p class="eyebrow">Service client</p>
-    <h1>Une question&nbsp;? <em class="accent">Écrivez-nous.</em></h1>
+    <h1>Une question&nbsp;? Écrivez-nous.</h1>
     <p class="lead">Pour des questions à propos d’une commande ou des informations sur nos produits.</p>
   </div>
 </section>
@@ -1529,8 +1556,8 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
       <div class="contact-card">
         <h2>Par téléphone, en boutique</h2>
         <ul class="phones">
-          <li><span>Vichy · Confiserie Moinet</span><a href="tel:+33470323177">04 70 32 31 77</a></li>
-          <li><span>Vichy · Côté Sucré</span><a href="tel:+33470319789">04 70 31 97 89</a></li>
+          <li><span>Confiserie Moinet, Vichy</span><a href="tel:+33470323177">04 70 32 31 77</a></li>
+          <li><span>Côté Sucré, Vichy</span><a href="tel:+33470319789">04 70 31 97 89</a></li>
           <li><span>Clermont-Ferrand</span><a href="tel:+33473242091">04 73 24 20 91</a></li>
           <li><span>Paris</span><a href="tel:+33142028718">01 42 02 87 18</a></li>
         </ul>
@@ -1611,7 +1638,7 @@ html:has([data-shop]) { scroll-padding-top: calc(var(--header-h) + 150px); } /* 
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <p>© 2026 Confiserie Moinet · Vichy</p>
+    <p>© 2026 Confiserie Moinet, Vichy</p>
     <ul>
       <li><a href="https://confiserie-moinet.fr/mentions-legales/">Mentions légales</a></li>
       <li><a href="https://confiserie-moinet.fr/conditions-generales-de-ventes/">CGV</a></li>

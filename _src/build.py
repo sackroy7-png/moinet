@@ -44,7 +44,7 @@ def header(active):
         for key, href, label in [("accueil", "index.html", "Accueil")] + NAV
     )
     return f'''<a class="skip-link" href="#contenu">Aller au contenu</a>
-<aside class="topbar" aria-label="Informations pratiques"><span class="tb-long">Livraison à domicile en Colissimo Suivi · Paiement sécurisé · </span><a href="magasins.html">6 boutiques à Vichy, Clermont-Ferrand et Paris</a></aside>
+<aside class="topbar" aria-label="Informations pratiques"><span class="tb-long">Livraison à domicile en Colissimo Suivi et paiement sécurisé. </span><a href="magasins.html">6 boutiques à Vichy, Clermont-Ferrand et Paris</a></aside>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="index.html" aria-label="Maison Moinet, confiseur à Vichy depuis 1852 — accueil">
@@ -129,7 +129,7 @@ FOOTER = f'''<div class="vichy vichy--rouge" aria-hidden="true"></div>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <p>© {YEAR} Confiserie Moinet · Vichy</p>
+    <p>© {YEAR} Confiserie Moinet, Vichy</p>
     <ul>
       <li><a href="{SITE}/mentions-legales/">Mentions légales</a></li>
       <li><a href="{SITE}/conditions-generales-de-ventes/">CGV</a></li>

@@ -71,6 +71,8 @@ css = re.sub(r'url\("\.\./(fonts/[^"]+)"\)', lambda m: f'url("{b64("assets/" + m
 main_js = (ROOT / 'assets/js/main.js').read_text(encoding='utf-8')
 cat_js = (ROOT / 'assets/js/catalogue.js').read_text(encoding='utf-8')
 motion_js = (ROOT / 'assets/js/motion.js').read_text(encoding='utf-8')
+pastille_js = (ROOT / 'assets/js/pastille.js').read_text(encoding='utf-8')
+immersif_js = (ROOT / 'assets/js/immersif.js').read_text(encoding='utf-8')
 
 router = '''
 (() => {
@@ -83,26 +85,36 @@ router = '''
     const [route, anchor] = path.split('/');
     return { route: TITLES[route] ? route : 'accueil', anchor, query };
   };
-  const show = () => {
+  const show = (first) => {
     const r = parse() || (location.hash ? null : { route: 'accueil' });
     if (!r) return;
-    views.forEach((v) => { v.hidden = v.dataset.view !== r.route; });
-    document.title = TITLES[r.route];
-    document.querySelectorAll('.main-nav a, .mobile-nav li a').forEach((a) => {
-      const on = a.getAttribute('href') === '#/' + r.route;
-      on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
-    });
-    const menu = document.getElementById('mobile-nav');
-    if (menu && !menu.hidden) menu.querySelector('.nav-close').click();
-    if (r.route === 'boutique') {
-      if (window.moinetShopSet) window.moinetShopSet(r.query); else window.MOINET_PENDING = r.query;
-    }
-    const target = r.anchor && (document.getElementById(r.route + '-' + r.anchor) || document.getElementById(r.anchor));
-    if (target) target.scrollIntoView(); else window.scrollTo(0, 0);
+    const cur = [...views].find((v) => !v.hidden);
+    const changed = !cur || cur.dataset.view !== r.route;
+    const apply = () => {
+      views.forEach((v) => { v.hidden = v.dataset.view !== r.route; });
+      document.title = TITLES[r.route];
+      document.querySelectorAll('.main-nav a, .mobile-nav li a').forEach((a) => {
+        const on = a.getAttribute('href') === '#/' + r.route;
+        on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+      });
+      const menu = document.getElementById('mobile-nav');
+      if (menu && !menu.hidden) menu.querySelector('.nav-close').click();
+      if (r.route === 'boutique') {
+        if (window.moinetShopSet) window.moinetShopSet(r.query); else window.MOINET_PENDING = r.query;
+      }
+      const target = r.anchor && (document.getElementById(r.route + '-' + r.anchor) || document.getElementById(r.anchor));
+      const behavior = changed ? 'instant' : 'smooth';
+      if (target) target.scrollIntoView({ behavior }); else window.scrollTo({ top: 0, behavior });
+      window.dispatchEvent(new Event('moinet:route'));
+    };
+    /* changement de page : la nouvelle vue s'ouvre en octogone (navigateurs compatibles, hors reduced-motion) */
+    const animate = changed && first !== true && document.startViewTransition
+      && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (animate) document.startViewTransition(apply); else apply();
   };
   window.MOINET_QUERY = () => (parse() || {}).query || '';
-  window.addEventListener('hashchange', show);
-  show();
+  window.addEventListener('hashchange', () => show());
+  show(true);
 })();
 ''' % (json.dumps(titles, ensure_ascii=False), json.dumps(NAVKEY))
 
@@ -116,6 +128,6 @@ out = (head + '<body>' + body
        + '<script>window.MOINET_SINGLE=true;window.MOINET_IMG=' + json.dumps(IMG) + ';'
        + 'document.querySelectorAll("img[data-img]").forEach(i=>{i.src=MOINET_IMG[i.dataset.img];});</script>\n'
        + '<script>window.MOINET_CATALOGUE=' + json.dumps(cat, ensure_ascii=False) + ';</script>\n'
-       + f'<script>{router}</script>\n<script>{main_js}</script>\n<script>{cat_js}</script>\n<script>{motion_js}</script>\n</body>\n</html>\n')
+       + f'<script>{router}</script>\n<script>{main_js}</script>\n<script>{cat_js}</script>\n<script>{motion_js}</script>\n<script>{pastille_js}</script>\n<script>{immersif_js}</script>\n</body>\n</html>\n')
 (ROOT / 'site-complet.html').write_text(out, encoding='utf-8')
 print('site-complet.html', round(len(out) / 1e6, 1), 'Mo,', len(IMG), 'images,', len(dups), 'id préfixés')

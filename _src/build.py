@@ -33,6 +33,12 @@ ICON = {
 }
 
 
+# Posé dans <head> : évite tout saut au premier rendu. Sous prefers-reduced-motion, rien n'est ajouté.
+INTRO = ('<script>try{var d=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches)'
+         '{d.classList.add("motion");if(!sessionStorage.getItem("moinet-intro")){d.classList.add("intro");'
+         'sessionStorage.setItem("moinet-intro","1")}}}catch(e){}</script>')
+
+
 def header(active):
     AC = ' aria-current="page"'
     links = "\n".join(
@@ -135,6 +141,7 @@ FOOTER = f'''<div class="vichy vichy--rouge" aria-hidden="true"></div>
       <li><a href="{SITE}/conditions-generales-de-ventes/">CGV</a></li>
     </ul>
   </div>
+  <p class="footer-word" aria-hidden="true"><span>Maison</span> <span>Moinet</span></p>
 </footer>
 <nav class="action-bar" aria-label="Actions rapides">
   <a class="btn" href="boutique.html">Commander en ligne</a>
@@ -149,6 +156,9 @@ def page(meta, main, slug):
     scripts = '<script src="assets/js/main.js" defer></script>\n<script src="assets/js/motion.js" defer></script>'
     if meta.get("catalogue") == "yes":
         scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
+    if meta.get("pastille") == "yes":
+        scripts += '\n<script src="assets/js/pastille.js" defer></script>'
+    scripts += '\n<script src="assets/js/immersif.js" defer></script>'
     return f'''<!doctype html>
 <html lang="fr" data-type="place">
 <head>
@@ -172,6 +182,7 @@ def page(meta, main, slug):
 <link rel="preload" href="assets/fonts/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/main.css">
+{INTRO}
 {extra_head}
 </head>
 <body>

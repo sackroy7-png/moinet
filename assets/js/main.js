@@ -43,24 +43,35 @@
     window.matchMedia('(min-width: 1200px)').addEventListener('change', (m) => { if (m.matches && !panel.hidden) close(); });
   }
 
-  /* Moment « word-highlight » : la citation s'allume mot à mot pendant que sa propre section
-     traverse l'écran. Sous reduced-motion, tout est allumé d'emblée. */
+  /* Moment « word-highlight » : la phrase s'allume mot à mot (et ses vignettes apparaissent)
+     pendant que sa section traverse l'écran. Sous reduced-motion, tout est allumé d'emblée. */
   document.querySelectorAll('[data-moment="word-highlight"]').forEach((section) => {
     const target = section.querySelector('[data-words]');
     if (!target) return;
-    const words = target.textContent.trim().split(/\s+/);
-    const full = target.textContent.trim().replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    target.innerHTML = `<span class="visually-hidden">${full}</span>` + words.map((w) => `<span class="w" aria-hidden="true">${w}</span>`).join(' ');
-    const spans = target.querySelectorAll('.w');
-    if (reduceMotion) { spans.forEach((w) => w.classList.add('on')); return; }
+    const full = target.textContent.replace(/\s+/g, ' ').replace(/ ([,.])/g, '$1').trim();
+    const items = [], frag = document.createDocumentFragment();
+    [...target.childNodes].forEach((n) => {
+      if (n.nodeType !== 3) { frag.append(n); if (n.nodeType === 1) items.push(n); return; }
+      n.textContent.split(/([ \n\t\r]+)/).forEach((part) => {       /* l'espace insécable reste dans le mot */
+        if (!part) return;
+        if (/^[ \n\t\r]+$/.test(part)) { frag.append(' '); return; }
+        const w = document.createElement('span');
+        w.className = 'w'; w.setAttribute('aria-hidden', 'true'); w.textContent = part;
+        frag.append(w); items.push(w);
+      });
+    });
+    const sr = document.createElement('span');
+    sr.className = 'visually-hidden'; sr.textContent = full;
+    target.replaceChildren(sr, frag);
+    if (reduceMotion) { items.forEach((w) => w.classList.add('on')); return; }
     let ticking = false;
     const paint = () => {
       ticking = false;
-      const r = section.getBoundingClientRect();
+      const r = target.getBoundingClientRect();
       const vh = window.innerHeight;
-      const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height * 0.7)));
-      const n = Math.round(p * spans.length);
-      spans.forEach((w, i) => w.classList.toggle('on', i < n));
+      const p = Math.min(1, Math.max(0, (vh * 0.88 - r.top) / (vh * 0.5 + r.height * 0.55)));
+      const n = Math.round(p * items.length);
+      items.forEach((w, i) => w.classList.toggle('on', i < n));
     };
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(paint); } };
     window.addEventListener('scroll', onScroll, { passive: true });

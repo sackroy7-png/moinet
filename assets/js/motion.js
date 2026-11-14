@@ -1,6 +1,6 @@
 /* Maison Moinet — animations signature (sans dépendance)
-   Inspirations 21st.dev : text reveal, roll button, magnetic, spotlight card, hover preview,
-   marquee, scroll-drawn timeline, animated tabs. Sous prefers-reduced-motion : rien ne bouge,
+   Inspirations 21st.dev : text reveal, roll button, magnetic, spotlight card, marquee,
+   scroll-drawn timeline. Les scènes liées au défilement sont dans immersif.js. Sous prefers-reduced-motion : rien ne bouge,
    tout est visible. */
 (() => {
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -68,29 +68,6 @@
         c.style.setProperty('--sy', `${e.clientY - r.top}px`);
       });
     });
-
-    /* 5. Liste des boutiques : la devanture suit le pointeur */
-    const list = document.querySelector('.store-list[data-previews]');
-    if (list) {
-      const fig = document.createElement('div'); fig.className = 'store-preview'; fig.setAttribute('aria-hidden', 'true');
-      const pic = document.createElement('img'); pic.alt = ''; fig.append(pic); document.body.append(fig);
-      let x = 0, y = 0, tx = 0, ty = 0, raf = 0, on = false;
-      const loop = () => {
-        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
-        fig.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        raf = on || Math.abs(tx - x) > 0.5 ? requestAnimationFrame(loop) : 0;
-      };
-      list.querySelectorAll('li[data-preview]').forEach((li) => {
-        const src = img(li.dataset.preview);
-        new Image().src = src;
-        li.addEventListener('pointerenter', (e) => {
-          if (!on) { x = tx = e.clientX + 24; y = ty = e.clientY - 120; }
-          pic.src = src; on = true; fig.classList.add('is-on'); if (!raf) raf = requestAnimationFrame(loop);
-        });
-        li.addEventListener('pointermove', (e) => { tx = e.clientX + 24; ty = e.clientY - 120; });
-      });
-      list.addEventListener('pointerleave', () => { on = false; fig.classList.remove('is-on'); });
-    }
   }
 
   /* 6. Frise : le fil se trace pendant que la section traverse l'écran */
@@ -111,36 +88,11 @@
     paint();
   });
 
-  /* 7. Sélecteur de parfum : la pastille de couleur glisse d'un parfum à l'autre,
-        les produits arrivent les uns après les autres */
-  const flavors = document.querySelector('.flavors');
-  if (flavors) {
-    const pill = document.createElement('span'); pill.className = 'flavor-pill'; pill.setAttribute('aria-hidden', 'true');
-    flavors.append(pill); flavors.classList.add('has-pill');
-    /* origine réelle de la pastille (dans un fieldset, elle démarre sous la légende) */
-    let ox = 0, oy = 0;
-    const origin = () => {
-      const t = pill.style.transform; pill.style.transform = 'none';
-      const fr = flavors.getBoundingClientRect(), pr = pill.getBoundingClientRect();
-      ox = pr.left - fr.left; oy = pr.top - fr.top; pill.style.transform = t;
-    };
-    origin();
-    const move = () => {
-      const b = flavors.querySelector('.flavor[aria-pressed="true"]');
-      if (!b) return;
-      const fr = flavors.getBoundingClientRect(), br = b.getBoundingClientRect();
-      pill.style.width = `${br.width}px`; pill.style.height = `${br.height}px`;
-      pill.style.transform = `translate(${br.left - fr.left - ox}px, ${br.top - fr.top - oy}px)`;
-      pill.style.background = getComputedStyle(b).getPropertyValue('--f');
-    };
-    new MutationObserver(move).observe(flavors, { subtree: true, attributes: true, attributeFilter: ['aria-pressed'] });
-    window.addEventListener('resize', () => { pill.classList.remove('ready'); origin(); move(); requestAnimationFrame(() => pill.classList.add('ready')); });
-    requestAnimationFrame(() => { move(); requestAnimationFrame(() => pill.classList.add('ready')); });
-    const grid = document.querySelector('.flavor-grid');
-    if (grid) new MutationObserver(() => {
-      [...grid.children].forEach((c, i) => { c.style.setProperty('--i', i); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); });
-    }).observe(grid, { childList: true });
-  }
+  /* 7. Sélecteur de parfum : les produits arrivent les uns après les autres */
+  const grid = document.querySelector('.flavor-grid');
+  if (grid) new MutationObserver(() => {
+    [...grid.children].forEach((c, i) => { c.style.setProperty('--i', i); c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop'); });
+  }).observe(grid, { childList: true });
 
   /* 8. Défilement infini (boîtes en fer, villes) : clones pour boucler, pause au survol
         et bouton pause pour tout mouvement de plus de 5 secondes */

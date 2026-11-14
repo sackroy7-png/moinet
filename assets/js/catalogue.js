@@ -87,28 +87,36 @@
     const status = picker.querySelector('.rail-status');
     const buttons = picker.querySelectorAll('.flavor');
     const shopLink = picker.querySelector('[data-flavor-link]');
+    /* les pastilles sans sucre ont leur propre entrée : elles ne comptent pas dans les quatre parfums */
+    const sugar = (re) => (p) => re.test(p.name) && !p.cats.includes('pastilles-sans-sucre');
     const MATCH = {
-      menthe: (p) => /menthe/i.test(p.name),
-      citron: (p) => /citron/i.test(p.name),
-      anis: (p) => /anis/i.test(p.name),
-      orange: (p) => /orange/i.test(p.name),
+      menthe: sugar(/menthe/i), citron: sugar(/citron/i), anis: sugar(/anis/i), orange: sugar(/orange/i),
       'sans-sucre': (p) => p.cats.includes('pastilles-sans-sucre')
     };
     const isPastille = (p) => p.cats.includes('pastilles') || p.cats.includes('pastilles-sans-sucre');
+    const stage = picker.closest('[data-stage]');
+    const kind = (p) => (/coffret/i.test(p.name) ? 'coffret' : /bo[iî]te/i.test(p.name) ? 'boite' : /sachet/i.test(p.name) ? 'sachet' : 'autre');
     const render = async (flavor) => {
       buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.flavor === flavor)));
+      /* sans la scène animée, la section prend tout de suite la couleur du parfum */
+      if (stage && !stage.classList.contains('is-live')) stage.dataset.flavor = flavor;
       try {
         const { products } = await loadCatalogue();
-        const list = products.filter((p) => isPastille(p) && p.stock && MATCH[flavor](p))
-          .sort((a, b) => a.price - b.price).slice(0, 6);
+        const all = products.filter((p) => isPastille(p) && p.stock && MATCH[flavor](p)).sort((a, b) => a.price - b.price);
+        /* d'abord la présentation la moins chère de chaque type (sachet, boîte, coffret), puis le reste */
+        const seen = new Set(), first = [], rest = [];
+        all.forEach((p) => { const k = kind(p); if (seen.has(k)) rest.push(p); else { seen.add(k); first.push(p); } });
+        const list = first.concat(rest).slice(0, 6);
         rail.innerHTML = list.map((p) => card(p, 'pastilles')).join('');
-        const label = picker.querySelector(`.flavor[data-flavor="${flavor}"]`).textContent.trim();
-        status.textContent = `${list.length} présentation${list.length > 1 ? 's' : ''} au parfum ${label.toLowerCase()}, du sachet au coffret.`;
+        const label = picker.querySelector(`.flavor[data-flavor="${flavor}"]`).textContent.trim().toLowerCase();
+        const n = `${all.length} présentation${all.length > 1 ? 's' : ''}`;
+        status.textContent = flavor === 'sans-sucre' ? `${n} sans sucre, du sachet au coffret.` : `${n} au parfum ${label}, du sachet au coffret.`;
         if (shopLink) shopLink.href = `${window.MOINET_SINGLE ? '#/boutique?' : 'boutique.html?'}cat=${flavor === 'sans-sucre' ? 'pastilles-sans-sucre' : 'pastilles'}${flavor === 'sans-sucre' ? '' : `&q=${flavor}`}`;
       } catch (e) {
         status.textContent = 'Le catalogue est momentanément indisponible.';
       }
     };
+    picker.addEventListener('moinet:flavor', (e) => render(e.detail));
     buttons.forEach((b) => b.addEventListener('click', () => render(b.dataset.flavor)));
     render('menthe');
   }

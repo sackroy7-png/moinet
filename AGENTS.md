@@ -33,7 +33,7 @@ Les `*.html` à la racine sont générés.
    pas appliquée, car il s'agit des vraies coordonnées du client, utiles à la visite.
    Le kit (scripts `gate.mjs`, `copy-lint.mjs`, `assets/`, `references/`) n'est pas fourni : les
    contrôles sont faits avec Playwright et axe-core.
-2. **UI UX Pro Max** (`docs/ui-ux-pro-max-CLAUDE.md`). Checklist §1–§3 (accessibilité,
+2. **UI UX Pro Max** (`.claude/skills/ui-ux-pro-max/`, installé depuis github.com/nextlevelbuilder/ui-ux-pro-max-skill v2.15, avec ses skills compagnons `design`, `design-system`, `ui-styling`, `brand`, `banner-design`, `slides`). Checklist §1–§3 (accessibilité,
    interaction, performance) appliquée ; recommandation produit « heritage / storytelling +
    hero-centric », adresses et horaires bien visibles.
 
@@ -61,3 +61,9 @@ Les `*.html` à la racine sont générés.
   depuis confiserie-moinet.fr, sinon l'instantané `assets/data/catalogue.json` (7 nov. 2026).
 - Aucun contenu inventé : textes, dates, chiffres, adresses et horaires viennent du site actuel.
 - `prefers-reduced-motion` : tout reste visible et immobile.
+
+## Serveur MCP 21st.dev
+
+Déclaré dans `.mcp.json` (composants UI de 21st.dev). La clé n'est **jamais** dans le dépôt :
+`x-api-key: proxy-injected` est une valeur factice, la vraie clé est un secret réseau de
+l'environnement cloud « moinet » (hôte `21st.dev`, en-tête `x-api-key`), injecté par le proxy.

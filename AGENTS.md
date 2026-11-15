@@ -6,18 +6,22 @@ statique fonctionnelle, à intégrer ensuite comme thème WordPress.
 ## Construire
 
 ```bash
-python3 _src/build.py      # _src/pages/*.html -> *.html (en-tête, pied de page, metas communs)
+python3 _src/build.py       # _src/pages/*.html -> *.html (en-tête, pied de page, metas communs)
+python3 _src/single.py      # tout le site dans site-complet.html (à lancer après build.py)
 python3 -m http.server 8765 # puis http://127.0.0.1:8765/ (fetch du catalogue impossible en file://)
 ```
 
 On édite toujours `_src/pages/*.html`, `_src/build.py`, `assets/css/main.css`, `assets/js/*.js`.
-Les `*.html` à la racine sont générés.
+Les `*.html` à la racine et `site-complet.html` sont générés.
+`_src/images.py` régénère les photos depuis les originaux du site (inutile en temps normal : les
+WebP sont versionnés).
 
 ## Direction artistique « La boîte en fer »
 
 - Rouge Moinet `#d71535` (relevé sur le logo), crème `#faf5ec`, encre `#221c19`, bleu carreaux Vichy `#2a4a96`.
 - Bodoni Moda (titres) + Jost (texte), auto-hébergées dans `assets/fonts` (licence OFL).
-- Signature : le coin coupé de l'octogone du logo (`.cut`), les carreaux Vichy (`.vichy`) avec parcimonie.
+- Signature : l'octogone, forme du logo et de la pastille. Coins coupés des cadres (`.cut`), pastille
+  en volume, fonds et pages qui s'ouvrent en octogone ; les carreaux Vichy (`.vichy`) avec parcimonie.
 - Couleurs des parfums (menthe, citron, anis, orange, sans sucre) : contraste ≥ 4,5:1 avec leur texte.
 
 ## Skills de design intégrés
@@ -45,13 +49,41 @@ Les `*.html` à la racine sont générés.
    Toutes ces règles sont en fin de `assets/css/main.css` (« Révision skills »).
 
 4. **Animations signature (nov. 2026, demande du client)**, inspirées de 21st.dev, dans
-   `assets/js/motion.js` et en fin de `main.css`. Titres révélés mot à mot au chargement, photo du
-   héros qui s'ouvre, archive qui se « développe », libellé des boutons qui roule, reflet sur le
-   bouton rouge, boutons magnétiques, halo qui suit le pointeur, aperçu des devantures au survol de
-   la liste des boutiques, frise tracée au défilement, pastille de couleur qui glisse entre les
-   parfums, défilement infini des boîtes en fer et des villes (pause au survol + bouton pause).
-   Écart volontaire au tasteskill (pas de carrousel) : les deux défilements, demandés par le client.
+   `assets/js/motion.js`. Titres révélés mot à mot au chargement, libellé des boutons qui roule,
+   reflet sur le bouton rouge, boutons magnétiques, halo qui suit le pointeur, frise tracée au
+   défilement, défilement infini des spécialités et des villes (pause au survol + bouton pause).
    Survols seulement avec une souris ; sous `prefers-reduced-motion`, motion.js ne fait rien.
+
+5. **Refonte immersive (nov. 2026, demande du client)**. Références données par le client :
+   theobromachocolat.com, fixchocolatier.com, buckssauce.com (plus sourjacks.com et und-ny.com,
+   vus en vidéo). Composants 21st.dev adaptés en JavaScript sans dépendance : « 3D Coverflow
+   Carousel » (dg.singh252525) pour l'éventail, « Scroll media expansion hero » (arunachalam) pour
+   la fenêtre de l'atelier. Tout est dans `assets/js/immersif.js`, `assets/js/pastille.js` et le
+   bloc « Refonte immersive » en fin de `main.css`.
+   - **Pastille 3D** (`pastille.js`, WebGL 1 écrit à la main, 14 Ko) : octogone chanfreiné, relief
+     « BASSIN DE VICHY » dessiné en 2D puis converti en carte de normales. Proportions relevées sur
+     la photo `savoir-2.webp`. Repli : l'image `assets/img/pastille.webp` (rendu de la même pastille).
+   - **Accueil** : ouverture en octogone rouge (une fois par visite) ; héros photo plein cadre, carte
+     « Nouveau », pastille qui dépasse du bord ; scène épinglée des parfums (la pastille se retourne,
+     la couleur s'ouvre en octogone, trois vrais produits par parfum) ; manifeste qui s'allume mot à
+     mot avec vignettes ; mosaïque à photos glissantes ; fenêtre de l'atelier ; frise de gravures ;
+     éventail 3D des boîtes ; boutiques sur bleu Vichy avec devanture qui change ; nom de la maison
+     en grand dans le pied de page.
+   - **Pages intérieures** : même cadre photo en tête de page, frise tracée (`data-trace`), pellicule
+     d'archives (`data-drift`), éventail sur « La Maison », pastille 3D sur « Savoir-faire ».
+   - **Transitions entre pages** en octogone : `@view-transition` (multi-pages) et
+     `document.startViewTransition` (routeur de `site-complet.html`).
+   - **Règles techniques** : aucune prise de contrôle de la molette ; les scènes épinglées sont en
+     `position: sticky` (deux par page au plus : parfums et atelier) ; une seule boucle
+     `requestAnimationFrame`, active seulement près de l'écran ; la classe `html.motion` est posée
+     dans `<head>` (script `INTRO` de `build.py`).
+   - **Écarts volontaires au tasteskill**, tous demandés par le client : scènes liées au défilement,
+     éventail (carrousel), rendu WebGL d'un produit sur un site de type « place », autocollant
+     incliné, plus de deux « moments » par page. Les noms sous l'éventail sont des boutons de
+     sélection, pas des légendes.
+   - **Contrôles** (Playwright + axe-core 4) : aucun défaut sur les six pages à 1440 px, 390 px et
+     sous mouvement réduit ; parcours clavier vérifié (une seule tabulation par rangée de noms, puis
+     flèches) ; aucun débordement horizontal de 320 à 1440 px ; CLS ≤ 0,03.
 
 ## À ne pas casser
 
@@ -60,7 +92,14 @@ Les `*.html` à la racine sont générés.
 - `assets/js/catalogue.js` lit l'API publique WooCommerce Store en direct quand la page est servie
   depuis confiserie-moinet.fr, sinon l'instantané `assets/data/catalogue.json` (7 nov. 2026).
 - Aucun contenu inventé : textes, dates, chiffres, adresses et horaires viennent du site actuel.
-- `prefers-reduced-motion` : tout reste visible et immobile.
+- `prefers-reduced-motion` : tout reste visible et immobile (immersif.js ne garde que le changement
+  de devanture). Sans JavaScript : la page reste complète, sans sélecteur de parfum.
+- Chaque scène a un état fixe dans le HTML ; `immersif.js` l'active en ajoutant `.is-live`.
+  Ne pas styler une scène sans vérifier les deux états.
+- La scène des parfums pilote le catalogue par l'événement `moinet:flavor` (écouté dans
+  `catalogue.js`) ; les pastilles sans sucre ne comptent pas dans les quatre parfums.
+- Focus des boutons `.btn` : liseré intérieur (un contour extérieur serait rogné par `clip-path`).
+- Après toute modification : `python3 _src/build.py && python3 _src/single.py`.
 
 ## Serveur MCP 21st.dev
 

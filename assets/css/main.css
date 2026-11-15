@@ -1344,4 +1344,4 @@ html:not(.motion) .archives { overflow-x: auto; }
 .spin-pastille::before { content: ""; position: absolute; inset: 17% 0; background: var(--menthe); clip-path: polygon(24% 0, 76% 0, 100% 26%, 100% 74%, 76% 100%, 24% 100%, 0 74%, 0 26%); }
 .spin-pastille .pastille-still { left: 9%; top: 9%; width: 82%; height: 82%; }
 .spin-pastille .pastille-canvas { inset: -5%; width: 110%; height: 110%; cursor: default; }
-@media (max-width: 899px) { .split-media--pastille { margin-bottom: 9%; } }
+@media (max-width: 899px) { .split-media--pastille { margin-bottom: 9%; } .spin-pastille { left: 2%; } }

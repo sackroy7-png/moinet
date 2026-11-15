@@ -166,12 +166,13 @@ p { margin: 0 0 1em; text-wrap: pretty; }
 }
 .btn:hover { --bg: var(--rouge-fonce); color: var(--fg); }
 .btn:active { transform: translateY(1px); }
-.btn:focus-visible { outline: none; box-shadow: none; background: var(--bleu); }
+/* focus : le bouton passe au bleu avec un liseré blanc à l'intérieur (un contour extérieur serait rogné par les coins coupés) */
+.btn:focus-visible { outline: none; --bg: var(--bleu); --fg: #fff; box-shadow: inset 0 0 0 2px var(--bleu), inset 0 0 0 4px #fff; }
 .btn svg { width: 18px; height: 18px; flex: none; transition: transform .25s var(--ease); }
 .btn:hover svg { transform: translateX(3px); }
 .btn--ghost { --bg: transparent; --fg: var(--encre); box-shadow: inset 0 0 0 1px var(--encre); clip-path: none; }
 .btn--ghost:hover { --bg: var(--encre); --fg: var(--creme); }
-.btn--ghost:focus-visible { outline: 3px solid var(--bleu); background: transparent; }
+.btn--ghost:focus-visible { --bg: transparent; --fg: var(--encre); outline: 3px solid var(--bleu); outline-offset: 2px; box-shadow: inset 0 0 0 1px var(--encre); }
 .btn--light { --bg: var(--creme); --fg: var(--encre); }
 .btn--light:hover { --bg: #fff; --fg: var(--rouge); }
 .btn--sm { min-height: 42px; padding: .6rem 1rem; font-size: .8rem; --cut: 7px; }
@@ -324,6 +325,7 @@ p { margin: 0 0 1em; text-wrap: pretty; }
   transition: background-color .2s var(--ease);
 }
 .add-cart:hover, .add-cart:focus-visible { background: var(--rouge); color: #fff; outline: none; }
+.add-cart:focus-visible { box-shadow: inset 0 0 0 2px var(--rouge), inset 0 0 0 4px #fff; }
 .add-cart svg { width: 20px; height: 20px; }
 .badge {
   position: absolute; top: 10px; left: 10px; z-index: 1;
@@ -925,7 +927,7 @@ html { overflow-x: clip; scroll-padding-top: calc(var(--head-zone) + 12px); }
 .hero-frame .btn--ghost:hover { --bg: var(--creme); --fg: var(--encre); }
 .hero-frame .btn--ghost::before { background: var(--creme); }
 .hero-frame :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
-.hero-frame .btn:focus-visible { background: var(--bg); }
+.hero-frame .btn--ghost:focus-visible { --fg: var(--creme); box-shadow: inset 0 0 0 1px rgba(250, 245, 236, .75); }
 .hero--im .hero-visit { color: rgba(250, 245, 236, .88); border-top-color: rgba(250, 245, 236, .3); max-width: 34em; margin: clamp(18px, 2.4vw, 30px) 0 0; }
 .hero--im .hero-visit strong { color: #fff; }
 
@@ -975,10 +977,10 @@ html { overflow-x: clip; scroll-padding-top: calc(var(--head-zone) + 12px); }
 
 /* ---------- La scène des pastilles ---------- */
 .stage {
-  --bg: var(--menthe); --on: #fff; --on-2: rgba(255, 255, 255, .84); --line: rgba(255, 255, 255, .34);
+  --bg: var(--menthe); --on: #fff; --on-2: rgba(255, 255, 255, .93); --line: rgba(255, 255, 255, .34);
   position: relative; z-index: 2; color: var(--on);
 }
-.stage[data-flavor="citron"] { --bg: var(--citron); --on: var(--encre); --on-2: rgba(34, 28, 25, .84); --line: rgba(34, 28, 25, .3); }
+.stage[data-flavor="citron"] { --bg: var(--citron); --on: var(--encre); --on-2: rgba(34, 28, 25, .9); --line: rgba(34, 28, 25, .3); }
 .stage[data-flavor="anis"] { --bg: var(--anis); }
 .stage[data-flavor="orange"] { --bg: var(--orange); }
 .stage[data-flavor="sans-sucre"] { --bg: var(--sans-sucre); }
@@ -1015,6 +1017,7 @@ html { overflow-x: clip; scroll-padding-top: calc(var(--head-zone) + 12px); }
 .stage .flavor[aria-pressed="true"] { background: var(--on); border-color: var(--on); color: var(--bg); }
 .stage .flavor[aria-pressed="true"] .dot { background: var(--bg); opacity: 1; }
 .stage .rail-status { color: var(--on-2); }
+.stage .product { color: var(--encre); }          /* les cartes produit restent à l'encre sur leur papier */
 /* sans JavaScript : pas de sélecteur ni de produits, il reste le texte, la pastille et le lien vers la boutique */
 html:not(.js) .stage .flavors, html:not(.js) .stage .rail-status { display: none; }
 html:not(.js) .stage .flavor-grid:empty { min-height: 0; margin: 0; }
@@ -1051,7 +1054,7 @@ html:not(.js) .stage .flavor-grid:empty { min-height: 0; margin: 0; }
 }
 .stage.is-live .flavors {
   grid-area: flavors; position: relative; z-index: 2; justify-self: start;
-  width: 100vw; min-inline-size: 0; margin: 0 0 0 calc(50% - 50vw); padding: 4px 0;
+  width: 100vw; min-inline-size: 0; margin: 0 0 0 calc(50% - 50vw); padding: 8px 0;
   display: flex; flex-wrap: nowrap; gap: clamp(22px, 5vw, 76px); overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
@@ -1145,7 +1148,6 @@ html:not(.motion) .word-band .marquee-track { justify-content: center; row-gap: 
 .atelier-copy { max-width: 40rem; }
 .atelier-copy h2 { color: var(--creme); font-size: clamp(2rem, 4.4vw, 3.9rem); }
 .atelier-copy p { color: rgba(250, 245, 236, .88); max-width: 34em; margin-bottom: 1.5rem; }
-.atelier-copy .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .atelier-facts { padding-block: clamp(28px, 4vw, 52px) clamp(56px, 8vw, 110px); }
 .atelier-facts .checks { margin: 0; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 1rem clamp(24px, 4vw, 64px); color: rgba(250, 245, 236, .86); }
 .atelier-facts .checks li::before { background: #f3a6b2; }
@@ -1210,7 +1212,7 @@ html:not(.motion) .word-band .marquee-track { justify-content: center; row-gap: 
 .fan-item[data-pos="out-l"] { transform: translateX(calc(var(--dx2) * -1.28)) scale(.5) rotateY(46deg); z-index: 1; opacity: 0; pointer-events: none; }
 .fan.is-live .fan-names {
   position: relative; display: flex; flex-wrap: nowrap; gap: clamp(22px, 4.4vw, 64px); overflow: hidden;
-  margin-top: clamp(14px, 2.4vw, 30px); padding-block: 4px;
+  margin-top: clamp(14px, 2.4vw, 30px); padding-block: 8px;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent);
 }
@@ -1226,7 +1228,7 @@ html:not(.motion) .word-band .marquee-track { justify-content: center; row-gap: 
 .fan.is-live .fan-nav { display: flex; justify-content: center; gap: .6rem; margin-top: clamp(10px, 1.6vw, 20px); }
 .fan-nav button {
   width: 48px; height: 48px; display: grid; place-items: center; cursor: pointer;
-  background: transparent; color: var(--creme); border: 1px solid rgba(250, 245, 236, .45);
+  background: transparent; color: var(--creme); border: 1px solid rgba(250, 245, 236, .65);
   transition: background-color .25s var(--ease), color .25s var(--ease);
 }
 .fan-nav button:hover { background: var(--creme); color: var(--encre); }

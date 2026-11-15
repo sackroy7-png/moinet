@@ -290,12 +290,18 @@
       });
       names.forEach((b, i) => b.setAttribute('aria-pressed', String(i === cur)));
       roving(names, cur); centerRow(row, names[cur]);
-      /* halo : la pièce choisie, floutée, éclaire la scène */
+      light();
+    };
+    /* halo : la pièce choisie, floutée, éclaire la scène (chargé seulement quand l'éventail approche de l'écran) */
+    let near = !('IntersectionObserver' in window);
+    const light = () => {
+      if (!near) return;
       const src = items[cur].querySelector('img');
       side = 1 - side;
       glow[side].src = src.currentSrc || src.src;
       glow[side].classList.add('is-on'); glow[1 - side].classList.remove('is-on');
     };
+    if (!near) new IntersectionObserver(([e], o) => { if (e.isIntersecting) { near = true; o.disconnect(); light(); } }, { rootMargin: '60% 0px' }).observe(fan);
     const go = (i) => { cur = (i % n + n) % n; place(); };
     names.forEach((b, i) => b.addEventListener('click', () => go(i)));
     fan.querySelector('[data-fan-prev]').addEventListener('click', () => go(cur - 1));

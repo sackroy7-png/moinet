@@ -94,7 +94,7 @@
     const wide = window.matchMedia('(min-width: 960px) and (min-height: 640px)');
 
     const measure = () => {
-      visual.style.setProperty('--py', '0px'); visual.style.setProperty('--ps', '1');
+      visual.style.setProperty('--py', '0px'); visual.style.setProperty('--px', '0px'); visual.style.setProperty('--ps', '1');
       const v = visual.getBoundingClientRect(), p = pin.getBoundingClientRect();
       restY = v.top + v.height / 2 - p.top;                 /* centre de la pastille dans la scène */
       if (past) past.resize();
@@ -117,7 +117,7 @@
       const col = pending;
       anim.onfinish = () => { held = col; bg.style.setProperty('--held', col); iris.style.background = 'transparent'; anim = null; };
       clearTimeout(swap);
-      swap = setTimeout(() => { stage.dataset.flavor = names[i]; }, 260);     /* le texte change de couleur quand l'octogone l'atteint */
+      swap = setTimeout(() => { stage.dataset.flavor = names[i]; }, 400);     /* le texte change de couleur quand l'octogone l'atteint */
       picker.dispatchEvent(new CustomEvent('moinet:flavor', { detail: names[i] }));
     };
 
@@ -129,9 +129,10 @@
       /* arrivée : la pastille dépasse du bord de la scène, puis gagne le centre en grandissant */
       if (wide.matches) {
         visual.style.setProperty('--py', `${(-(restY + visual.offsetHeight * 0.07) * (1 - e)).toFixed(1)}px`);
+        visual.style.setProperty('--px', `${(window.innerWidth * 0.085 * (1 - e)).toFixed(1)}px`);   /* entre le texte et la carte du héros */
         visual.style.setProperty('--ps', (0.42 + 0.58 * e).toFixed(3));
       } else {
-        visual.style.setProperty('--py', '0px');
+        visual.style.setProperty('--py', '0px'); visual.style.setProperty('--px', '0px');
         visual.style.setProperty('--ps', (0.7 + 0.3 * e).toFixed(3));
       }
       bg.style.setProperty('--flat', clamp((enter - 0.72) / 0.28).toFixed(3));
@@ -225,14 +226,50 @@
     });
   });
 
-  /* ---------- Gravures : la frise glisse pendant que la section traverse l'écran ---------- */
+  /* ---------- Frises qui glissent : gravures, archives ---------- */
   document.querySelectorAll('[data-drift]').forEach((el) => {
-    const img = el.querySelector('img');
+    if (el.dataset.drift === 'fine' && !fine) return;        /* sur écran tactile, la rangée se fait défiler à la main */
+    const inner = el.firstElementChild;
     scene(el, () => {
       const r = el.getBoundingClientRect(), vh = window.innerHeight;
-      const k = clamp((vh - r.top) / (vh + r.height)), over = Math.max(0, img.offsetWidth - el.clientWidth);
-      img.style.setProperty('--drift', `${(-lerp(0.03, 0.97, k) * over).toFixed(1)}px`);
+      const k = clamp((vh - r.top) / (vh + r.height)), over = Math.max(0, inner.offsetWidth - el.clientWidth);
+      inner.style.setProperty('--drift', `${(-lerp(0.03, 0.97, k) * over).toFixed(1)}px`);
     });
+  });
+
+  /* ---------- Photos qui glissent dans leur cadre ---------- */
+  document.querySelectorAll('[data-plx]').forEach((el) => {
+    scene(el, () => {
+      const r = el.getBoundingClientRect();
+      const k = clamp((r.top + r.height / 2) / window.innerHeight - 0.5, -1, 1);
+      el.style.setProperty('--plx', `${(-k * r.height * 0.065).toFixed(1)}px`);
+    });
+  });
+
+  /* ---------- Frise tracée le long d'une liste ---------- */
+  document.querySelectorAll('[data-trace]').forEach((list) => {
+    const items = [...list.children];
+    scene(list, () => {
+      const r = list.getBoundingClientRect();
+      const p = clamp((window.innerHeight * 0.62 - r.top) / r.height);
+      list.style.setProperty('--draw', p.toFixed(3));
+      items.forEach((it) => it.classList.toggle('reached', it.offsetTop + 30 <= p * r.height));
+    });
+  });
+
+  /* ---------- Pastille seule : elle tourne pendant que son bloc traverse l'écran ---------- */
+  document.querySelectorAll('[data-pastille]').forEach((box) => {
+    const past = window.MoinetPastille ? window.MoinetPastille.create(box.querySelector('canvas')) : null;
+    if (!past) return;
+    box.classList.add('has-gl'); past.resize();
+    const bounce = [0.184, 0.384, 0.706];
+    scene(box, (t) => {
+      const r = box.getBoundingClientRect(), vh = window.innerHeight;
+      const k = clamp((vh - r.top) / (vh + r.height));
+      past.draw({ spin: 0.2 + k * Math.PI * 2 + Math.sin(t / 2100) * 0.08, tiltX: -0.34 + Math.sin(t / 1900) * 0.05, tiltZ: -0.1, bounce });
+    });
+    window.addEventListener('resize', () => past.resize());
+    window.addEventListener('moinet:route', () => requestAnimationFrame(() => past.resize()));
   });
 
   /* ---------- L'éventail des boîtes ---------- */

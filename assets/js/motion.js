@@ -19,9 +19,9 @@
       [...node.childNodes].forEach((n) => {
         if (n.nodeType === 3) {
           const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach((part) => {
+          n.textContent.split(/([ \n\t\r]+)/).forEach((part) => {      /* l'espace insécable reste dans le mot */
             if (!part) return;
-            if (/^\s+$/.test(part)) { frag.append(part); return; }
+            if (/^[ \n\t\r]+$/.test(part)) { frag.append(part); return; }
             const outer = document.createElement('span'); outer.className = 'wm';
             const inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--i', i++);
             outer.append(inner); frag.append(outer);

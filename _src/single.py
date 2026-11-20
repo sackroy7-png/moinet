@@ -6,11 +6,11 @@ Usage : python3 _src/build.py && python3 _src/single.py"""
 import base64, collections, json, pathlib, re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-PAGES = ['index', 'maison', 'savoir-faire', 'boutique', 'magasins', 'contact']
+PAGES = ['index', 'maison', 'savoir-faire', 'boutique', 'produit', 'magasins', 'contact']
 ROUTE = {'index': 'accueil', 'maison': 'maison', 'savoir-faire': 'savoir-faire',
-         'boutique': 'boutique', 'magasins': 'magasins', 'contact': 'contact'}
+         'boutique': 'boutique', 'produit': 'produit', 'magasins': 'magasins', 'contact': 'contact'}
 NAVKEY = {'accueil': '', 'maison': 'maison', 'savoir-faire': 'savoir-faire', 'boutique': 'boutique',
-          'magasins': 'magasins', 'contact': 'contact'}
+          'produit': 'boutique', 'magasins': 'magasins', 'contact': 'contact'}
 MIME = {'.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2'}
 
 
@@ -28,7 +28,7 @@ def links(html):
         elif rest.startswith('?'):
             r += rest
         return f'href="{r}"'
-    return re.sub(r'href="(index|maison|savoir-faire|boutique|magasins|contact)\.html([?#][^"]*)?"', repl, html)
+    return re.sub(r'href="(index|maison|savoir-faire|boutique|produit|magasins|contact)\.html([?#][^"]*)?"', repl, html)
 
 
 docs = {p: (ROOT / f'{p}.html').read_text(encoding='utf-8') for p in PAGES}
@@ -94,13 +94,16 @@ router = '''
       views.forEach((v) => { v.hidden = v.dataset.view !== r.route; });
       document.title = TITLES[r.route];
       document.querySelectorAll('.main-nav a, .mobile-nav li a').forEach((a) => {
-        const on = a.getAttribute('href') === '#/' + r.route;
+        const on = a.getAttribute('href') === '#/' + (NAV[r.route] || r.route);
         on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
       });
       const menu = document.getElementById('mobile-nav');
       if (menu && !menu.hidden) menu.querySelector('.nav-close').click();
       if (r.route === 'boutique') {
         if (window.moinetShopSet) window.moinetShopSet(r.query); else window.MOINET_PENDING = r.query;
+      }
+      if (r.route === 'produit') {
+        if (window.moinetFicheSet) window.moinetFicheSet(r.query); else window.MOINET_PENDING_FICHE = r.query;
       }
       const target = r.anchor && (document.getElementById(r.route + '-' + r.anchor) || document.getElementById(r.anchor));
       const behavior = changed ? 'instant' : 'smooth';
@@ -128,6 +131,7 @@ out = (head + '<body>' + body
        + '<script>window.MOINET_SINGLE=true;window.MOINET_IMG=' + json.dumps(IMG) + ';'
        + 'document.querySelectorAll("img[data-img]").forEach(i=>{i.src=MOINET_IMG[i.dataset.img];});</script>\n'
        + '<script>window.MOINET_CATALOGUE=' + json.dumps(cat, ensure_ascii=False) + ';</script>\n'
+       + '<script>window.MOINET_OFFRE=' + (ROOT / 'assets/data/offre.json').read_text(encoding='utf-8') + ';</script>\n'
        + f'<script>{router}</script>\n<script>{main_js}</script>\n<script>{cat_js}</script>\n<script>{motion_js}</script>\n<script>{pastille_js}</script>\n<script>{immersif_js}</script>\n</body>\n</html>\n')
 (ROOT / 'site-complet.html').write_text(out, encoding='utf-8')
 print('site-complet.html', round(len(out) / 1e6, 1), 'Mo,', len(IMG), 'images,', len(dups), 'id préfixés')

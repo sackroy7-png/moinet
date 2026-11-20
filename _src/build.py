@@ -8,7 +8,7 @@ nav: maison|savoir-faire|boutique|magasins|contact|
 body_class: ...
 -->
 Puis le contenu de <main>. En-tête et pied de page sont communs."""
-import pathlib, re, datetime
+import pathlib, re, datetime, json
 
 ROOT = pathlib.Path(__file__).resolve().parent
 OUT = ROOT.parent
@@ -155,7 +155,7 @@ def page(meta, main, slug):
     extra_head = meta.get("head", "")
     scripts = '<script src="assets/js/main.js" defer></script>\n<script src="assets/js/motion.js" defer></script>'
     if meta.get("catalogue") == "yes":
-        scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
+        scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/data/offre.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
     if meta.get("pastille") == "yes":
         scripts += '\n<script src="assets/js/pastille.js" defer></script>'
     scripts += '\n<script src="assets/js/immersif.js" defer></script>'
@@ -209,6 +209,10 @@ def parse(text):
             meta[key] += "\n" + line
     return meta, text[m.end():]
 
+
+# l'organisation de l'offre est aussi servie en script (ouverture en file://, fichier unique)
+offre = json.loads((OUT / "assets/data/offre.json").read_text(encoding="utf-8"))
+(OUT / "assets/data/offre.js").write_text("window.MOINET_OFFRE=" + json.dumps(offre, ensure_ascii=False, separators=(",", ":")) + ";\n", encoding="utf-8")
 
 for src in sorted((ROOT / "pages").glob("*.html")):
     meta, main = parse(src.read_text(encoding="utf-8"))

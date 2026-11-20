@@ -1345,3 +1345,80 @@ html:not(.motion) .archives { overflow-x: auto; }
 .spin-pastille .pastille-still { left: 9%; top: 9%; width: 82%; height: 82%; }
 .spin-pastille .pastille-canvas { inset: -5%; width: 110%; height: 110%; cursor: default; }
 @media (max-width: 899px) { .split-media--pastille { margin-bottom: 9%; } .spin-pastille { left: 2%; } }
+
+/* ==========================================================================
+   Offre réorganisée (nov. 2026) : rayons, filtres, fiches à déclinaisons, quantité
+   ========================================================================== */
+/* sélecteur de quantité */
+.qty { position: relative; z-index: 1; display: inline-flex; align-items: stretch; border: 1px solid rgba(34, 28, 25, .35); background: var(--papier); height: 48px; }
+.qty-btn { width: 44px; border: 0; background: none; cursor: pointer; font: 500 1.25rem/1 var(--sans); color: var(--encre); transition: background-color .2s var(--ease); }
+.qty-btn:hover { background: var(--creme-2); }
+.qty-input { width: 44px; border: 0; border-inline: 1px solid var(--filet); background: none; text-align: center; font: 500 1rem/1 var(--sans); -moz-appearance: textfield; appearance: textfield; }
+.qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.qty :focus-visible { outline: 3px solid var(--bleu); outline-offset: -3px; }
+.qty--sm { height: 44px; }
+.qty--sm .qty-btn { width: 34px; font-size: 1.1rem; }
+.qty--sm .qty-input { width: 34px; font-size: .95rem; }
+
+/* cartes : quantité et panier pour un produit sans déclinaison, « Choisir » sinon */
+.product-buy { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding-top: .55rem; }
+.price-from { font-weight: 400; font-size: .85em; color: var(--encre-2); }
+.product-choose {
+  position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 .9rem;
+  background: var(--encre); color: var(--creme); font: 500 .85rem/1 var(--sans);
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+  transition: background-color .2s var(--ease);
+}
+.product:hover .product-choose { background: var(--rouge); }
+.product:has(h3 a:focus-visible) { outline: 3px solid var(--bleu); outline-offset: 2px; }
+
+/* boutique : filtres sous forme de bascules */
+.chips--filters { margin: 0; padding: 0; flex: 1 1 100%; }
+.chip--filter { border-style: dashed; }
+.chip--filter[aria-pressed="true"] { border-style: solid; background: var(--rouge); border-color: var(--rouge); color: #fff; }
+@media (min-width: 1100px) { .chips--filters { flex: 0 1 auto; } }
+
+/* fiche produit */
+.fiche-page { padding-top: clamp(20px, 3vw, 40px); }
+.fiche { display: grid; gap: clamp(24px, 4vw, 64px); align-items: start; margin-top: .5rem; }
+@media (min-width: 900px) { .fiche { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.fiche-frame {
+  aspect-ratio: 1; background: #fff; overflow: hidden;
+  --cut: var(--frame-cut);
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+.fiche-frame img { width: 100%; height: 100%; object-fit: contain; }
+@media (min-width: 900px) { .fiche-media { position: sticky; top: calc(var(--head-zone) + 16px); } }
+.fiche-info h1 { font-size: clamp(2rem, 3.6vw, 3.2rem); margin: 0 0 .35em; }
+.fiche-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1rem; margin: 0 0 1.4rem; }
+.fiche-price .price { font-size: 1.6rem; }
+.fiche-meta { color: var(--encre-2); }
+.opt { border: 0; margin: 0 0 1.3rem; padding: 0; }
+.opt legend { padding: 0; margin-bottom: .6rem; font-weight: 500; }
+.opt-current { font-weight: 400; color: var(--encre-2); }
+.opt-list { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opt-item { position: relative; cursor: pointer; }
+.opt-item input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.opt-item span {
+  display: inline-flex; align-items: center; min-height: 46px; padding: .5rem 1rem;
+  background: var(--papier); border: 1px solid rgba(34, 28, 25, .3); font: 500 .95rem/1.2 var(--sans);
+  transition: border-color .2s var(--ease), background-color .2s var(--ease), color .2s var(--ease);
+}
+.opt-item:hover span { border-color: var(--encre); }
+.opt-item input:checked + span { background: var(--encre); border-color: var(--encre); color: var(--creme); }
+.opt-item input:focus-visible + span { outline: 3px solid var(--bleu); outline-offset: 2px; }
+.opt-item.is-off span { color: var(--encre-2); border-style: dashed; text-decoration: line-through; text-decoration-thickness: 1px; }
+.opt-item.is-off input:checked + span { color: var(--creme); text-decoration: none; }
+.fiche-buy { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; margin-top: .4rem; }
+.fiche-qty { display: grid; gap: .4rem; }
+.fiche-label { font-weight: 500; }
+.fiche-add { flex: 1 1 220px; min-height: 52px; }
+.fiche-add.is-disabled { --bg: var(--encre-2); cursor: not-allowed; }
+.fiche-total { min-height: 1.5em; margin: .8rem 0 .4rem; font-weight: 500; }
+.fiche-info .small { margin-bottom: .6rem; }
+.fiche-related { margin-top: clamp(32px, 5vw, 64px); background: var(--papier); }
+.fiche-related h2 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+.fiche-missing { padding-block: clamp(48px, 8vw, 120px); }
+/* sur téléphone, la barre de filtres défile avec la page : elle prendrait près de la moitié de l'écran */
+@media (max-width: 759px) { .shop-toolbar { position: static; } }

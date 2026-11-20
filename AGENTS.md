@@ -85,6 +85,17 @@ WebP sont versionnés).
      sous mouvement réduit ; parcours clavier vérifié (une seule tabulation par rangée de noms, puis
      flèches) ; aucun débordement horizontal de 320 à 1440 px ; CLS ≤ 0,03.
 
+6. **Offre réorganisée (nov. 2026, demande du client)**. `assets/data/offre.json` est la source :
+   10 rayons, 5 filtres cumulables (Pour offrir, Promotions, Carreaux Vichy, Bicentenaire, Pâques),
+   37 familles de déclinaisons (parfum, poids, décor, format…) et les produits masqués (doublon
+   « Mendiants de Vichy » 1239). 152 produits WooCommerce donnent 62 fiches. Chaque variante reste
+   un produit WooCommerce : le panier reçoit son id et la quantité (`?add-to-cart=<id>&quantity=<n>`).
+   Fiche produit : `produit.html?f=<famille>&v=<id>` (sélecteurs de déclinaison, quantité, total).
+   Une combinaison absente (ex. sans sucre anis 500 g) est barrée ; la choisir bascule sur la plus
+   proche. `build.py` génère `assets/data/offre.js` (ouverture en file://). Les anciennes adresses
+   `boutique.html?cat=<catégorie WooCommerce>` restent valides (filtre ou rayon correspondant).
+   Pour WooCommerce, ces familles sont la base d'une conversion en produits variables.
+
 ## À ne pas casser
 
 - Panier, compte, commandes, CGV et mentions légales restent ceux de WooCommerce

@@ -86,17 +86,18 @@
 <div data-shop>
   <div class="shop-toolbar">
     <div class="wrap">
-      <div class="chips" role="group" aria-label="Filtrer par catégorie"></div>
+      <div class="chips" role="group" aria-label="Choisir un rayon" data-rayons></div>
       <div class="toolbar-row">
         <div class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
           <label for="shop-search" class="visually-hidden">Rechercher un produit</label>
-          <input class="field" id="shop-search" type="search" placeholder="Rechercher : menthe, caramel, coffret…" autocomplete="off">
+          <input class="field" id="shop-search" type="search" placeholder="Rechercher : menthe, 500 g, coffret…" autocomplete="off">
         </div>
+        <div class="chips chips--filters" role="group" aria-label="Filtrer" data-filtres></div>
         <p class="result-count" aria-live="polite"></p>
         <label class="sort">Trier
           <select id="shop-sort">
-            <option value="pertinence">Sélection de la maison</option>
+            <option value="pertinence">Par rayon</option>
             <option value="prix-asc">Prix croissant</option>
             <option value="prix-desc">Prix décroissant</option>
             <option value="nom">Nom (A–Z)</option>
@@ -178,6 +179,7 @@
 <script src="assets/js/main.js" defer></script>
 <script src="assets/js/motion.js" defer></script>
 <script src="assets/data/catalogue.js" defer></script>
+<script src="assets/data/offre.js" defer></script>
 <script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>
 <script src="assets/js/immersif.js" defer></script>
 </body>

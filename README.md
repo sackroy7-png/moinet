@@ -10,9 +10,10 @@ Voir `AGENTS.md` pour la direction artistique, les skills intégrés et les règ
 | Page | Remplace | Contenu |
 |---|---|---|
 | `index.html` | `/` | Héros photo, scène des parfums avec pastille 3D, manifeste, spécialités, atelier, histoire, boîtes en éventail, boutiques, presse, recettes |
-| `boutique.html` | `/boutique-en-ligne/` + catégories | 152 produits, filtres par catégorie, recherche, tri, ajout au panier WooCommerce |
+| `boutique.html` | `/boutique-en-ligne/` + catégories | 62 fiches (152 produits regroupés), 10 rayons, filtres, recherche, tri, quantité |
 | `maison.html` | `/maison-moinet/` + `/histoire-de-la-maison/` | Chiffres, sept générations (frise tracée), archives, griffe en éventail, production, points de vente |
 | `savoir-faire.html` | `/notre-savoir-faire/` | Artisanat, pastilles, gamme |
+| `produit.html` | fiches produit | Une fiche par produit avec ses déclinaisons (parfum, poids…), quantité, ajout au panier WooCommerce |
 | `magasins.html` | `/nos-magasins/` | 6 boutiques, horaires, itinéraire, appel, données structurées `Store` |
 | `contact.html` | `/nous-contacter/` | E-mail, téléphones, formulaire (ouvre le client mail ; à rebrancher sur Contact Form 7) |
 

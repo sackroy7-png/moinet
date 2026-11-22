@@ -75,6 +75,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-radius: 1px;
 }
 
+[hidden] { display: none !important; }   /* l'attribut hidden l'emporte sur les display des composants */
 .visually-hidden {
   position: absolute !important; width: 1px; height: 1px; overflow: hidden;
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
@@ -1439,3 +1440,10 @@ html:not(.motion) .archives { overflow-x: auto; }
 @media (max-width: 640px) { .cookie-banner { bottom: 86px; } }
 .link-btn { background: none; border: 0; padding: 0; min-height: 44px; color: inherit; font: inherit; cursor: pointer; text-decoration: none; }
 .link-btn:hover { color: #fff; text-decoration: underline; }
+.fiche-description { margin-top: 1.4rem; color: var(--encre-2); max-width: 38rem; }
+.fiche-description:empty { display: none; }
+.fiche-description p { margin: 0 0 .8em; }
+/* thème WordPress : pages de contenu (panier, commande, compte, CGV…) */
+.wp-content { padding-top: clamp(28px, 5vw, 72px); }
+.prose-wide { max-width: 72rem; }
+.wp-content h1 { font-size: clamp(2.2rem, 4.6vw, 3.8rem); }

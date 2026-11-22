@@ -105,6 +105,14 @@ WebP sont versionnés).
    Constat sur le site actuel (22 nov. 2026) : il utilise encore `UA-124933013-1` (Universal
    Analytics, arrêté par Google en juillet 2023) et n'a pas de bandeau de consentement.
 
+8. **Thème WordPress (nov. 2026)**. `python3 _src/wordpress.py` (après `build.py`) génère
+   `wordpress/moinet/` (ignoré par git) et `wordpress/moinet.zip` (versionné). Les gabarits sont
+   tirés des pages générées : liens convertis (`moinet_url()`, `home_url()`), ressources servies par
+   le thème (`moinet_asset()`). Fichiers écrits à la main : `_src/wordpress/`. Dans WordPress,
+   `window.MOINET_WP` met `catalogue.js` en mode direct (API Store du site, panier local, fiche =
+   page produit WooCommerce de la déclinaison). Identifiant GA4 : Personnaliser > Mesure d'audience.
+   Test local : WordPress + WooCommerce + SQLite, voir README.
+
 ## À ne pas casser
 
 - Panier, compte, commandes, CGV et mentions légales restent ceux de WooCommerce
@@ -119,7 +127,7 @@ WebP sont versionnés).
 - La scène des parfums pilote le catalogue par l'événement `moinet:flavor` (écouté dans
   `catalogue.js`) ; les pastilles sans sucre ne comptent pas dans les quatre parfums.
 - Focus des boutons `.btn` : liseré intérieur (un contour extérieur serait rogné par `clip-path`).
-- Après toute modification : `python3 _src/build.py && python3 _src/single.py`.
+- Après toute modification : `python3 _src/build.py && python3 _src/single.py && python3 _src/wordpress.py`.
 
 ## Serveur MCP 21st.dev
 

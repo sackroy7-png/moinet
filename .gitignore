@@ -1,3 +1,7 @@
 .taste-skill/
 *.zip
 .DS_Store
+
+# thème WordPress généré (le zip wordpress/moinet.zip est versionné)
+wordpress/moinet/
+!wordpress/moinet.zip

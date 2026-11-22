@@ -4,8 +4,12 @@
    (rayons, filtres, familles de déclinaisons) vient de assets/data/offre.json : chaque variante
    d'une fiche est un produit WooCommerce existant, le panier reste celui du site. */
 (() => {
-  const SHOP = 'https://confiserie-moinet.fr';
-  const LIVE = /(^|\.)confiserie-moinet\.fr$/.test(location.hostname);
+  /* Dans le thème WordPress, window.MOINET_WP (posé par functions.php) donne les adresses du site :
+     accueil, boutique, panier, API Store. Ailleurs (maquette), on vise le site de production. */
+  const WP = window.MOINET_WP || null;
+  const SHOP = WP ? WP.home.replace(/\/$/, '') : 'https://confiserie-moinet.fr';
+  const LIVE = !!WP || /(^|\.)confiserie-moinet\.fr$/.test(location.hostname);
+  const API = WP ? WP.store.replace(/\/$/, '') : '/wp-json/wc/store/v1';
 
   const decode = (s) => { const t = document.createElement('textarea'); t.innerHTML = s; return t.value; };
   const euro = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
@@ -14,20 +18,21 @@
   async function loadLive() {
     const all = []; let page = 1; let pages = 1;
     do {
-      const r = await fetch(`/wp-json/wc/store/v1/products?per_page=100&page=${page}`, { credentials: 'same-origin' });
+      const r = await fetch(`${API}/products?per_page=100&page=${page}`, { credentials: 'same-origin' });
       if (!r.ok) throw new Error('store api');
       pages = +r.headers.get('X-WP-TotalPages') || 1;
       all.push(...await r.json()); page++;
     } while (page <= pages);
-    const cats = await (await fetch('/wp-json/wc/store/v1/products/categories?per_page=100')).json();
+    const cats = await (await fetch(`${API}/products/categories?per_page=100`)).json();
     return {
       categories: cats.map((c) => ({ slug: c.slug, name: decode(c.name), count: c.count })),
       products: all.map((x) => {
         const m = 10 ** x.prices.currency_minor_unit;
         return {
           id: x.id, name: decode(x.name), price: x.prices.price / m, regular: x.prices.regular_price / m,
-          cats: x.categories.map((c) => c.slug), img: x.images[0]?.thumbnail || null, alt: x.images[0]?.alt || '',
-          url: x.permalink, stock: x.is_in_stock, buy: x.is_purchasable && x.type === 'simple', weight: x.formatted_weight || ''
+          cats: x.categories.map((c) => c.slug), img: x.images[0]?.thumbnail || null, big: x.images[0]?.src || null, alt: x.images[0]?.alt || '',
+          url: x.permalink, stock: x.is_in_stock, buy: x.is_purchasable && x.type === 'simple', weight: x.formatted_weight || '',
+          desc: x.description || x.short_description || ''
         };
       })
     };
@@ -89,11 +94,17 @@
   /* ---------- Liens, prix, panier ---------- */
   const SINGLE = !!window.MOINET_SINGLE;
   const link = (page, params = {}) => {
+    if (WP) {
+      const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v)).toString();
+      return `${page === 'index' ? WP.home : WP.shop}${q ? `${WP.shop.includes('?') ? '&' : '?'}${q}` : ''}`;
+    }
     const q = new URLSearchParams(Object.entries(params).filter(([, v]) => v)).toString();
     return SINGLE ? `#/${page}${q ? `?${q}` : ''}` : `${page}.html${q ? `?${q}` : ''}`;
   };
-  const ficheLink = (f, p) => link('produit', { f: f.slug, v: p && f.variants.length > 1 ? p.id : '' });
-  const cartUrl = (id, q = 1) => `${SHOP}/panier/?add-to-cart=${id}${q > 1 ? `&quantity=${q}` : ''}`;
+  /* WordPress : la fiche d'une déclinaison est la page produit WooCommerce de cette déclinaison */
+  const ficheLink = (f, p) => (WP ? (p || f.def).url : link('produit', { f: f.slug, v: p && f.variants.length > 1 ? p.id : '' }));
+  const cartBase = WP ? WP.cart : `${SHOP}/panier/`;
+  const cartUrl = (id, q = 1) => `${cartBase}${cartBase.includes('?') ? '&' : '?'}add-to-cart=${id}${q > 1 ? `&quantity=${q}` : ''}`;
   const priceHtml = (p) => (p.regular > p.price
     ? `<del><span class="visually-hidden">Prix initial </span>${euro.format(p.regular)}</del><ins><span class="visually-hidden">Prix promotionnel </span>${euro.format(p.price)}</ins>`
     : euro.format(p.price));
@@ -248,7 +259,9 @@
         state.q = u.get('q') || ''; state.sort = u.get('tri') || 'pertinence';
         search.value = state.q; sort.value = state.sort;
       };
-      read(window.MOINET_QUERY ? window.MOINET_QUERY() : location.search);
+      /* WordPress : une page de catégorie (/categorie-produit/<slug>/) ouvre le rayon ou le filtre correspondant */
+      const initial = shop.dataset.cat && !new URLSearchParams(location.search).get('cat') ? `?cat=${shop.dataset.cat}${location.search ? `&${location.search.slice(1)}` : ''}` : location.search;
+      read(window.MOINET_QUERY ? window.MOINET_QUERY() : initial);
       const hay = new Map(m.families.map((f) => [f, norm([f.name, ...f.variants.flatMap((v) => [v.p.name, ...v.opts]), (m.rayons.find((r) => r.slug === f.rayon) || {}).name || ''].join(' '))]));
       const nIn = (slug) => m.families.filter((f) => f.rayon === slug).length;
       chips.innerHTML = [`<button type="button" class="chip" data-cat="all">Tout<span class="n">${m.families.length}</span></button>`]
@@ -326,7 +339,8 @@
               <a class="btn fiche-add" data-cart="" rel="nofollow" href="#">Ajouter au panier</a>
             </div>
             <p class="fiche-total" aria-live="polite"></p>
-            <p class="small muted">Le panier s’ouvre sur confiserie-moinet.fr. Paiement sécurisé par carte, livraison en Colissimo Suivi.</p>
+            <p class="small muted">${WP ? '' : 'Le panier s’ouvre sur confiserie-moinet.fr. '}Paiement sécurisé par carte, livraison en Colissimo Suivi.</p>
+            <div class="fiche-description"></div>
             <a class="link-arrow fiche-more" href="#" rel="noopener">Voir la description complète</a>
           </div>
         </div>
@@ -342,7 +356,7 @@
       const match = (i, val) => f.variants.find((v) => v.opts.every((o, k) => (k === i ? o === val : o === cur.opts[k])));
       const paint = (pushUrl) => {
         const p = cur.p, qty = clampQty(q.value), ok = p.buy && p.stock;
-        if (p.img) img.src = (window.MOINET_IMG && window.MOINET_IMG[p.img]) || p.img;
+        if (p.big || p.img) img.src = p.big || (window.MOINET_IMG && window.MOINET_IMG[p.img]) || p.img;
         img.alt = cur.opts.length ? `${f.name}, ${cur.opts.join(', ')}` : f.name;
         fiche.querySelector('.fiche-price .price').innerHTML = priceHtml(p);
         fiche.querySelector('.fiche-meta').textContent = [weight(p), p.stock ? 'en stock' : 'épuisé'].filter(Boolean).join(', ');
@@ -364,6 +378,9 @@
         fiche.querySelector('.fiche-qty').hidden = !ok;
         fiche.querySelector('.fiche-total').textContent = ok && qty > 1 ? `Total : ${euro.format(p.price * qty)} pour ${qty} articles` : '';
         fiche.querySelector('.fiche-more').href = p.url;
+        /* description : celle de WooCommerce quand on la lit en direct, sinon un lien vers le site actuel */
+        fiche.querySelector('.fiche-description').innerHTML = p.desc || '';
+        fiche.querySelector('.fiche-more').hidden = !!p.desc || !!WP;
         document.title = `${f.name} · Maison Moinet`;
         if (pushUrl) history.replaceState(null, '', ficheLink(f, f.variants.length > 1 ? p : null));
         if (seen !== p) { seen = p; track('view_item', { currency: 'EUR', value: p.price, items: [item(p, f)] }); }
@@ -378,7 +395,8 @@
       paint(false);
     };
     window.moinetFicheSet = (q) => show(q);
-    if (!SINGLE) show(location.search);
+    if (WP) show(`v=${fiche.dataset.product}`);
+    else if (!SINGLE) show(location.search);
     else if (window.MOINET_PENDING_FICHE) { show(window.MOINET_PENDING_FICHE); window.MOINET_PENDING_FICHE = null; }
   }
 })();

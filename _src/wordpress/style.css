@@ -1,0 +1,12 @@
+/*
+Theme Name: Maison Moinet
+Theme URI: https://confiserie-moinet.fr/
+Description: Thème du site de la Maison Moinet, confiseur à Vichy depuis 1852. Accueil immersif (pastille du Bassin de Vichy en 3D, parfums, atelier, boîtes en fer), boutique WooCommerce organisée en rayons, une fiche par produit avec ses déclinaisons, mesure d'audience avec consentement. Généré depuis la maquette par _src/wordpress.py.
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 7.4
+WC requires at least: 8.0
+Text Domain: moinet
+License: GPL-2.0-or-later (code) ; polices Bodoni Moda et Jost sous licence OFL ; textes, photos et marques : Maison Moinet
+*/
+/* Les styles du site sont dans assets/css/main.css, chargé par functions.php. */

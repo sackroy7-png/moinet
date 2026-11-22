@@ -1422,3 +1422,20 @@ html:not(.motion) .archives { overflow-x: auto; }
 .fiche-missing { padding-block: clamp(48px, 8vw, 120px); }
 /* sur téléphone, la barre de filtres défile avec la page : elle prendrait près de la moitié de l'écran */
 @media (max-width: 759px) { .shop-toolbar { position: static; } }
+
+/* ---------- Bandeau de consentement (assets/js/mesure.js, seulement si un identifiant GA4 est renseigné) ---------- */
+.cookie-banner { position: fixed; z-index: 90; left: var(--gutter); right: var(--gutter); bottom: var(--bar-gap); display: flex; justify-content: center; pointer-events: none; }
+.cookie-in {
+  pointer-events: auto; width: min(100%, 44rem); background: var(--papier); color: var(--encre);
+  padding: 1.1rem 1.3rem 1.2rem; filter: drop-shadow(0 10px 28px rgba(34, 28, 25, .28));
+  --cut: 14px;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+.cookie-in h2 { font-size: 1.3rem; margin: 0 0 .35rem; }
+.cookie-in p { font-size: .95rem; color: var(--encre-2); margin: 0 0 .9rem; }
+.cookie-actions { display: flex; gap: .6rem; }
+.cookie-actions .btn { flex: 1; }
+@media (max-width: 640px) { .cookie-banner { bottom: 86px; } }
+.link-btn { background: none; border: 0; padding: 0; min-height: 44px; color: inherit; font: inherit; cursor: pointer; text-decoration: none; }
+.link-btn:hover { color: #fff; text-decoration: underline; }

@@ -149,6 +149,21 @@
     </article>`;
   }
 
+  /* ---------- Mesure : événements e-commerce GA4, relayés par mesure.js après consentement ---------- */
+  /* les événements émis avant le chargement de mesure.js attendent dans une file */
+  const track = (name, params) => { if (window.moinetTrack) window.moinetTrack(name, params); else (window.MOINET_TRACKQ = window.MOINET_TRACKQ || []).push([name, params]); };
+  const item = (p, f, q = 1) => ({ item_id: String(p.id), item_name: f ? f.name : p.name, item_variant: f && f.variants.length > 1 ? f.variants.find((v) => v.p === p).opts.join(', ') : undefined,
+    item_category: f ? f.rayon : undefined, price: p.price, quantity: q });
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href*="add-to-cart="]'); if (!a || a.classList.contains('is-disabled')) return;
+    const u = new URL(a.href), pid = +u.searchParams.get('add-to-cart'), q = +u.searchParams.get('quantity') || 1;
+    if (!modelCache) return;
+    modelCache.then((m) => {
+      const f = m.ofPid.get(pid), v = f && f.variants.find((x) => x.p.id === pid);
+      if (v) track('add_to_cart', { currency: 'EUR', value: +(v.p.price * q).toFixed(2), items: [item(v.p, f, q)] });
+    });
+  });
+
   /* ---------- Sélecteur de quantité (cartes et fiche) ---------- */
   const clampQty = (v) => Math.min(99, Math.max(1, Math.round(+v) || 1));
   const syncQty = (input) => {
@@ -255,6 +270,8 @@
           ? list.map(familyCard).join('')
           : '<p class="empty">Aucune douceur ne correspond à cette recherche. Essayez un autre mot, un autre rayon ou retirez un filtre.</p>';
         count.textContent = `${list.length} produit${list.length > 1 ? 's' : ''}`;
+        track('view_item_list', { item_list_id: state.cat, item_list_name: (m.rayons.find((r) => r.slug === state.cat) || { name: 'Toute la boutique' }).name,
+          items: list.slice(0, 20).map((f, i) => ({ ...item(f.def, f), index: i })) });
         if (push && !SINGLE) {
           const u = new URLSearchParams();
           if (state.cat !== 'all') u.set('cat', state.cat);
@@ -321,6 +338,7 @@
       const img = fiche.querySelector('.fiche-frame img');
       img.loading = 'eager';
       /* une déclinaison existe-t-elle avec cette valeur, les autres choix restant les mêmes ? */
+      let seen = null;
       const match = (i, val) => f.variants.find((v) => v.opts.every((o, k) => (k === i ? o === val : o === cur.opts[k])));
       const paint = (pushUrl) => {
         const p = cur.p, qty = clampQty(q.value), ok = p.buy && p.stock;
@@ -348,6 +366,7 @@
         fiche.querySelector('.fiche-more').href = p.url;
         document.title = `${f.name} · Maison Moinet`;
         if (pushUrl) history.replaceState(null, '', ficheLink(f, f.variants.length > 1 ? p : null));
+        if (seen !== p) { seen = p; track('view_item', { currency: 'EUR', value: p.price, items: [item(p, f)] }); }
       };
       fiche.querySelectorAll('.opt input').forEach((r) => r.addEventListener('change', () => {
         const i = +r.closest('[data-axis]').dataset.axis;

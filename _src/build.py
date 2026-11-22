@@ -139,6 +139,7 @@ FOOTER = f'''<div class="vichy vichy--rouge" aria-hidden="true"></div>
     <ul>
       <li><a href="{SITE}/mentions-legales/">Mentions légales</a></li>
       <li><a href="{SITE}/conditions-generales-de-ventes/">CGV</a></li>
+      <li><button type="button" class="link-btn" data-cookies hidden>Gestion des cookies</button></li>
     </ul>
   </div>
   <p class="footer-word" aria-hidden="true"><span>Maison</span> <span>Moinet</span></p>
@@ -158,7 +159,7 @@ def page(meta, main, slug):
         scripts += '\n<script src="assets/data/catalogue.js" defer></script>\n<script src="assets/data/offre.js" defer></script>\n<script src="assets/js/catalogue.js" data-catalogue="assets/data/catalogue.json" defer></script>'
     if meta.get("pastille") == "yes":
         scripts += '\n<script src="assets/js/pastille.js" defer></script>'
-    scripts += '\n<script src="assets/js/immersif.js" defer></script>'
+    scripts += '\n<script src="assets/js/immersif.js" defer></script>\n<script src="assets/js/mesure.js" defer></script>'
     return f'''<!doctype html>
 <html lang="fr" data-type="place">
 <head>

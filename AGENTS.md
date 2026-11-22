@@ -96,6 +96,15 @@ WebP sont versionnés).
    `boutique.html?cat=<catégorie WooCommerce>` restent valides (filtre ou rayon correspondant).
    Pour WooCommerce, ces familles sont la base d'une conversion en produits variables.
 
+7. **Mesure d'audience (nov. 2026)**. `assets/js/mesure.js` : Google Analytics 4 et bandeau de
+   consentement conforme CNIL, inactifs tant que `GA4_ID` est vide (y coller l'identifiant `G-…`
+   de la propriété GA4 de Moinet). Mode consentement Google v2 refusé par défaut ; balise chargée
+   seulement après « Accepter » ; accord gardé 13 mois, refus 6 mois ; lien « Gestion des cookies »
+   dans le pied de page. Événements e-commerce envoyés par `catalogue.js` (`window.moinetTrack`) :
+   `view_item_list`, `view_item`, `add_to_cart`. L'achat (`purchase`) se mesure côté WooCommerce.
+   Constat sur le site actuel (22 nov. 2026) : il utilise encore `UA-124933013-1` (Universal
+   Analytics, arrêté par Google en juillet 2023) et n'a pas de bandeau de consentement.
+
 ## À ne pas casser
 
 - Panier, compte, commandes, CGV et mentions légales restent ceux de WooCommerce

@@ -1440,6 +1440,23 @@ html:not(.motion) .archives { overflow-x: auto; }
 .fiche-missing { padding-block: clamp(48px, 8vw, 120px); }
 /* sur téléphone, la barre de filtres défile avec la page : elle prendrait près de la moitié de l'écran */
 @media (max-width: 759px) { .shop-toolbar { position: static; } }
+
+/* ---------- Bandeau de consentement (assets/js/mesure.js, seulement si un identifiant GA4 est renseigné) ---------- */
+.cookie-banner { position: fixed; z-index: 90; left: var(--gutter); right: var(--gutter); bottom: var(--bar-gap); display: flex; justify-content: center; pointer-events: none; }
+.cookie-in {
+  pointer-events: auto; width: min(100%, 44rem); background: var(--papier); color: var(--encre);
+  padding: 1.1rem 1.3rem 1.2rem; filter: drop-shadow(0 10px 28px rgba(34, 28, 25, .28));
+  --cut: 14px;
+  clip-path: polygon(var(--cut) 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%, var(--cut) 100%, 0 calc(100% - var(--cut)), 0 var(--cut));
+}
+.cookie-in h2 { font-size: 1.3rem; margin: 0 0 .35rem; }
+.cookie-in p { font-size: .95rem; color: var(--encre-2); margin: 0 0 .9rem; }
+.cookie-actions { display: flex; gap: .6rem; }
+.cookie-actions .btn { flex: 1; }
+@media (max-width: 640px) { .cookie-banner { bottom: 86px; } }
+.link-btn { background: none; border: 0; padding: 0; min-height: 44px; color: inherit; font: inherit; cursor: pointer; text-decoration: none; }
+.link-btn:hover { color: #fff; text-decoration: underline; }
 </style>
 <script>try{var d=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("motion");if(!sessionStorage.getItem("moinet-intro")){d.classList.add("intro");sessionStorage.setItem("moinet-intro","1")}}}catch(e){}</script>
  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Confiserie Moinet","alternateName":"Maison Moinet","url":"https://confiserie-moinet.fr/","logo":"https://confiserie-moinet.fr/wp-content/themes/confiserie-moinet/images/header-logo.png","foundingDate":"1852","foundingLocation":"Vichy","email":"contact@confiserie-moinet.fr","sameAs":["https://www.facebook.com/maisonmoinet/","https://www.instagram.com/maisonmoinet/"]}</script>
@@ -2268,6 +2285,7 @@ html:not(.motion) .archives { overflow-x: auto; }
     <ul>
       <li><a href="https://confiserie-moinet.fr/mentions-legales/">Mentions légales</a></li>
       <li><a href="https://confiserie-moinet.fr/conditions-generales-de-ventes/">CGV</a></li>
+      <li><button type="button" class="link-btn" data-cookies hidden>Gestion des cookies</button></li>
     </ul>
   </div>
   <p class="footer-word" aria-hidden="true"><span>Maison</span> <span>Moinet</span></p>
@@ -2720,6 +2738,21 @@ html:not(.motion) .archives { overflow-x: auto; }
     </article>`;
   }
 
+  /* ---------- Mesure : événements e-commerce GA4, relayés par mesure.js après consentement ---------- */
+  /* les événements émis avant le chargement de mesure.js attendent dans une file */
+  const track = (name, params) => { if (window.moinetTrack) window.moinetTrack(name, params); else (window.MOINET_TRACKQ = window.MOINET_TRACKQ || []).push([name, params]); };
+  const item = (p, f, q = 1) => ({ item_id: String(p.id), item_name: f ? f.name : p.name, item_variant: f && f.variants.length > 1 ? f.variants.find((v) => v.p === p).opts.join(', ') : undefined,
+    item_category: f ? f.rayon : undefined, price: p.price, quantity: q });
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href*="add-to-cart="]'); if (!a || a.classList.contains('is-disabled')) return;
+    const u = new URL(a.href), pid = +u.searchParams.get('add-to-cart'), q = +u.searchParams.get('quantity') || 1;
+    if (!modelCache) return;
+    modelCache.then((m) => {
+      const f = m.ofPid.get(pid), v = f && f.variants.find((x) => x.p.id === pid);
+      if (v) track('add_to_cart', { currency: 'EUR', value: +(v.p.price * q).toFixed(2), items: [item(v.p, f, q)] });
+    });
+  });
+
   /* ---------- Sélecteur de quantité (cartes et fiche) ---------- */
   const clampQty = (v) => Math.min(99, Math.max(1, Math.round(+v) || 1));
   const syncQty = (input) => {
@@ -2826,6 +2859,8 @@ html:not(.motion) .archives { overflow-x: auto; }
           ? list.map(familyCard).join('')
           : '<p class="empty">Aucune douceur ne correspond à cette recherche. Essayez un autre mot, un autre rayon ou retirez un filtre.</p>';
         count.textContent = `${list.length} produit${list.length > 1 ? 's' : ''}`;
+        track('view_item_list', { item_list_id: state.cat, item_list_name: (m.rayons.find((r) => r.slug === state.cat) || { name: 'Toute la boutique' }).name,
+          items: list.slice(0, 20).map((f, i) => ({ ...item(f.def, f), index: i })) });
         if (push && !SINGLE) {
           const u = new URLSearchParams();
           if (state.cat !== 'all') u.set('cat', state.cat);
@@ -2892,6 +2927,7 @@ html:not(.motion) .archives { overflow-x: auto; }
       const img = fiche.querySelector('.fiche-frame img');
       img.loading = 'eager';
       /* une déclinaison existe-t-elle avec cette valeur, les autres choix restant les mêmes ? */
+      let seen = null;
       const match = (i, val) => f.variants.find((v) => v.opts.every((o, k) => (k === i ? o === val : o === cur.opts[k])));
       const paint = (pushUrl) => {
         const p = cur.p, qty = clampQty(q.value), ok = p.buy && p.stock;
@@ -2919,6 +2955,7 @@ html:not(.motion) .archives { overflow-x: auto; }
         fiche.querySelector('.fiche-more').href = p.url;
         document.title = `${f.name} · Maison Moinet`;
         if (pushUrl) history.replaceState(null, '', ficheLink(f, f.variants.length > 1 ? p : null));
+        if (seen !== p) { seen = p; track('view_item', { currency: 'EUR', value: p.price, items: [item(p, f)] }); }
       };
       fiche.querySelectorAll('.opt input').forEach((r) => r.addEventListener('change', () => {
         const i = +r.closest('[data-axis]').dataset.axis;
@@ -3641,6 +3678,103 @@ void main() {
   if (word && 'IntersectionObserver' in window) {
     new IntersectionObserver(([e], o) => { if (e.isIntersecting) { word.classList.add('is-in'); o.disconnect(); } }, { threshold: 0.35 }).observe(word);
   } else if (word) word.classList.add('is-in');
+})();
+</script>
+<script>/* Maison Moinet — mesure d'audience (Google Analytics 4) et consentement aux cookies.
+   Rien n'est chargé tant que GA4_ID est vide : coller ici l'identifiant de la propriété GA4 de
+   Moinet (G-XXXXXXXXXX), créée avec le compte Google de Moinet.
+   Règles CNIL appliquées : aucun cookie de mesure avant un accord explicite ; « Refuser » aussi
+   visible que « Accepter » ; choix modifiable à tout moment (lien « Gestion des cookies » du pied
+   de page) ; accord conservé 13 mois, refus 6 mois. Mode consentement de Google (v2) déclaré
+   « refusé » par défaut ; la balise Google n'est chargée qu'après l'accord.
+   Les événements e-commerce (view_item_list, view_item, add_to_cart) viennent de catalogue.js
+   (window.moinetTrack) ; ils ne partent vers Google qu'après l'accord.
+   Dans le thème WordPress, l'achat lui-même (purchase) est mesuré côté WooCommerce
+   (extension Google for WooCommerce ou Site Kit). */
+(() => {
+  'use strict';
+  const GA4_ID = '';                                   /* ← identifiant GA4 de Moinet */
+  const id = window.MOINET_GA4 || GA4_ID;
+  if (!/^G-[A-Z0-9]{4,}$/.test(id)) return;
+
+  const KEY = 'moinet-consentement';
+  const MONTH = 30 * 24 * 3600 * 1000;
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = window.gtag || gtag;
+  gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', wait_for_update: 500 });
+
+  const read = () => {
+    try {
+      const c = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!c) return null;
+      const age = Date.now() - c.t;
+      return age < (c.ok ? 13 : 6) * MONTH ? c : null;
+    } catch (e) { return null; }
+  };
+  const save = (ok) => { try { localStorage.setItem(KEY, JSON.stringify({ ok, t: Date.now() })); } catch (e) { /* stockage indisponible */ } };
+
+  let loaded = false;
+  const queue = [];
+  const start = () => {
+    gtag('consent', 'update', { analytics_storage: 'granted' });
+    if (loaded) return;
+    loaded = true;
+    const s = document.createElement('script');
+    s.async = true; s.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    document.head.append(s);
+    gtag('js', new Date());
+    gtag('config', id);
+    queue.splice(0).forEach(([name, params]) => gtag('event', name, params));
+  };
+  const stop = () => {
+    gtag('consent', 'update', { analytics_storage: 'denied' });
+    /* efface les cookies de mesure déjà posés */
+    document.cookie.split(';').map((c) => c.trim().split('=')[0]).filter((n) => /^_ga/.test(n)).forEach((n) => {
+      const host = location.hostname.split('.').slice(-2).join('.');
+      [`${n}=; Max-Age=0; path=/`, `${n}=; Max-Age=0; path=/; domain=.${host}`].forEach((v) => { document.cookie = v; });
+    });
+  };
+
+  /* événements du catalogue : envoyés seulement après accord */
+  window.moinetTrack = (name, params) => {
+    const c = read();
+    if (c && c.ok) { if (loaded) gtag('event', name, params); else queue.push([name, params]); }
+  };
+  (window.MOINET_TRACKQ || []).splice(0).forEach(([n, p]) => window.moinetTrack(n, p));
+
+  /* bandeau */
+  let banner;
+  const close = () => { if (banner) { banner.remove(); banner = null; } };
+  const open = () => {
+    if (banner) return;
+    banner = document.createElement('section');
+    banner.className = 'cookie-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-labelledby', 'cookie-title');
+    banner.innerHTML = `<div class="cookie-in">
+      <h2 id="cookie-title">Mesure d’audience</h2>
+      <p>Avec votre accord, nous mesurons la fréquentation du site avec Google Analytics pour l’améliorer : pages vues, produits consultés, ajouts au panier. Vous pouvez changer d’avis à tout moment avec le lien « Gestion des cookies » en bas de page.</p>
+      <div class="cookie-actions">
+        <button type="button" class="btn btn--sm btn--ink" data-choice="0">Refuser</button>
+        <button type="button" class="btn btn--sm btn--ink" data-choice="1">Accepter</button>
+      </div>
+    </div>`;
+    banner.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-choice]'); if (!b) return;
+      const ok = b.dataset.choice === '1';
+      save(ok); if (ok) start(); else stop();
+      close();
+    });
+    document.body.append(banner);
+  };
+
+  const init = () => {
+    document.querySelectorAll('[data-cookies]').forEach((b) => { b.hidden = false; b.addEventListener('click', open); });
+    const c = read();
+    if (!c) open(); else if (c.ok) start();
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>
 </body>

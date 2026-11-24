@@ -11,3 +11,7 @@ Avant l'envoi :
    (Brevo : `{{ unsubscribe }}` et `{{ mirror }}` ; Mailchimp : `*|UNSUB|*` et `*|ARCHIVE|*`).
 4. Objet proposé : « Les boîtes Moinet pour les fêtes ». Le texte d'aperçu est déjà dans l'e-mail.
 5. N'envoyer qu'aux personnes qui ont accepté de recevoir la lettre (RGPD).
+
+Maquette Figma modifiable (fichier « Maison Moinet — Newsletter fêtes 2026 ») :
+https://www.figma.com/design/FlAD7jRyXFBXs6mvzEf5Zw
+La carte produit y est un composant : changer sa mise en page met à jour les quatre produits.

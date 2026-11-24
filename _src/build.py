@@ -120,7 +120,7 @@ FOOTER = f'''<div class="vichy vichy--rouge" aria-hidden="true"></div>
         <li><a href="boutique.html?cat=chocolats">Chocolats</a></li>
         <li><a href="boutique.html?cat=caramels-nougats">Caramels &amp; nougats</a></li>
         <li><a href="boutique.html?cat=sucres-cuits">Sucres d’orge</a></li>
-        <li><a href="boutique.html?cat=pour-offrir">Idées cadeaux</a></li>
+        <li><a href="boutique.html?cat=coffrets-souvenirs">Idées cadeaux</a></li>
       </ul>
     </div>
     <div>

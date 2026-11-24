@@ -86,7 +86,8 @@ WebP sont versionnés).
      flèches) ; aucun débordement horizontal de 320 à 1440 px ; CLS ≤ 0,03.
 
 6. **Offre réorganisée (nov. 2026, demande du client)**. `assets/data/offre.json` est la source :
-   10 rayons, 5 filtres cumulables (Pour offrir, Promotions, Carreaux Vichy, Bicentenaire, Pâques),
+   10 rayons (les 5 filtres Pour offrir, Promotions, Carreaux Vichy, Bicentenaire, Pâques ont été retirés
+   à la demande du client en nov. 2026 : leurs anciennes adresses mènent à toute la boutique),
    37 familles de déclinaisons (parfum, poids, décor, format…) et les produits masqués (doublon
    « Mendiants de Vichy » 1239). 152 produits WooCommerce donnent 62 fiches. Chaque variante reste
    un produit WooCommerce : le panier reçoit son id et la quantité (`?add-to-cart=<id>&quantity=<n>`).

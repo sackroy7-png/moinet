@@ -235,71 +235,59 @@
     render('menthe');
   }
 
-  /* ---------- Page boutique : rayons, filtres, recherche, tri ---------- */
+  /* ---------- Page boutique : rayons, recherche, tri ---------- */
   const shop = document.querySelector('[data-shop]');
   if (shop) {
     const grid = shop.querySelector('.product-grid');
     const chips = shop.querySelector('[data-rayons]');
-    const toggles = shop.querySelector('[data-filtres]');
     const search = shop.querySelector('#shop-search');
     const sort = shop.querySelector('#shop-sort');
     const count = shop.querySelector('.result-count');
     const norm = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-    const state = { cat: 'all', with: new Set(), q: '', sort: 'pertinence' };
+    const state = { cat: 'all', q: '', sort: 'pertinence' };
 
     loadModel().then((m) => {
-      const fil = m.offre.filtres, legacy = m.offre.anciennesCategories || {};
+      /* les anciennes adresses de filtres (?cat=pour-offrir, ?avec=…) mènent à toute la boutique */
+      const legacy = m.offre.anciennesCategories || {};
       const read = (query) => {
         const u = new URLSearchParams(query);
         let cat = u.get('cat') || 'all';
-        state.with = new Set((u.get('avec') || '').split(',').filter((x) => fil.some((f) => f.slug === x)));
-        if (fil.some((f) => f.slug === cat)) { state.with.add(cat); cat = 'all'; }
         cat = legacy[cat] || cat;
         state.cat = m.rayons.some((r) => r.slug === cat) ? cat : 'all';
         state.q = u.get('q') || ''; state.sort = u.get('tri') || 'pertinence';
         search.value = state.q; sort.value = state.sort;
       };
-      /* WordPress : une page de catégorie (/categorie-produit/<slug>/) ouvre le rayon ou le filtre correspondant */
+      /* WordPress : une page de catégorie (/categorie-produit/<slug>/) ouvre le rayon correspondant */
       const initial = shop.dataset.cat && !new URLSearchParams(location.search).get('cat') ? `?cat=${shop.dataset.cat}${location.search ? `&${location.search.slice(1)}` : ''}` : location.search;
       read(window.MOINET_QUERY ? window.MOINET_QUERY() : initial);
       const hay = new Map(m.families.map((f) => [f, norm([f.name, ...f.variants.flatMap((v) => [v.p.name, ...v.opts]), (m.rayons.find((r) => r.slug === f.rayon) || {}).name || ''].join(' '))]));
       const nIn = (slug) => m.families.filter((f) => f.rayon === slug).length;
       chips.innerHTML = [`<button type="button" class="chip" data-cat="all">Tout<span class="n">${m.families.length}</span></button>`]
         .concat(m.rayons.filter((r) => nIn(r.slug)).map((r) => `<button type="button" class="chip" data-cat="${r.slug}">${esc(r.name)}<span class="n">${nIn(r.slug)}</span></button>`)).join('');
-      toggles.innerHTML = fil.filter((f) => m.families.some((x) => x.filters.has(f.slug)))
-        .map((f) => `<button type="button" class="chip chip--filter" data-with="${f.slug}" aria-pressed="false">${esc(f.name)}</button>`).join('');
 
       const apply = (push = true) => {
         chips.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.cat === state.cat)));
-        toggles.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(state.with.has(c.dataset.with))));
         const words = norm(state.q.trim()).split(/\s+/).filter(Boolean);
         let list = m.families.filter((f) => (state.cat === 'all' || f.rayon === state.cat)
-          && [...state.with].every((w) => f.filters.has(w))
           && words.every((w) => hay.get(f).includes(w)));
         if (state.sort === 'prix-asc') list = [...list].sort((a, b) => a.min - b.min);
         if (state.sort === 'prix-desc') list = [...list].sort((a, b) => b.max - a.max);
         if (state.sort === 'nom') list = [...list].sort((a, b) => a.name.localeCompare(b.name, 'fr'));
         grid.innerHTML = list.length
           ? list.map(familyCard).join('')
-          : '<p class="empty">Aucune douceur ne correspond à cette recherche. Essayez un autre mot, un autre rayon ou retirez un filtre.</p>';
+          : '<p class="empty">Aucune douceur ne correspond à cette recherche. Essayez un autre mot ou un autre rayon.</p>';
         count.textContent = `${list.length} produit${list.length > 1 ? 's' : ''}`;
         track('view_item_list', { item_list_id: state.cat, item_list_name: (m.rayons.find((r) => r.slug === state.cat) || { name: 'Toute la boutique' }).name,
           items: list.slice(0, 20).map((f, i) => ({ ...item(f.def, f), index: i })) });
         if (push && !SINGLE) {
           const u = new URLSearchParams();
           if (state.cat !== 'all') u.set('cat', state.cat);
-          if (state.with.size) u.set('avec', [...state.with].join(','));
           if (state.q) u.set('q', state.q);
           if (state.sort !== 'pertinence') u.set('tri', state.sort);
           history.replaceState(null, '', `${location.pathname}${u.toString() ? `?${u}` : ''}`);
         }
       };
       chips.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; state.cat = b.dataset.cat; apply(); });
-      toggles.addEventListener('click', (e) => {
-        const b = e.target.closest('.chip'); if (!b) return;
-        if (state.with.has(b.dataset.with)) state.with.delete(b.dataset.with); else state.with.add(b.dataset.with);
-        apply();
-      });
       let t; search.addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => { state.q = search.value; apply(); }, 160); });
       sort.addEventListener('change', () => { state.sort = sort.value; apply(); });
       apply(false);

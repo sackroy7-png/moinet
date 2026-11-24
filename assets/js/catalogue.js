@@ -235,6 +235,18 @@
     render('menthe');
   }
 
+  /* ---------- Boîtes de l'accueil : prix à jour et lien vers la fiche ---------- */
+  const boxes = document.querySelectorAll('[data-box]');
+  if (boxes.length) {
+    loadModel().then((m) => boxes.forEach((el) => {
+      const f = m.ofPid.get(+el.dataset.box);
+      if (!f) return;
+      const price = el.querySelector('[data-box-price]'), a = el.querySelector('[data-box-link]');
+      if (price) price.textContent = (f.min !== f.max ? 'dès ' : '') + euro.format(f.min);
+      if (a) a.href = ficheLink(f);
+    })).catch(() => {});
+  }
+
   /* ---------- Page boutique : rayons, recherche, tri ---------- */
   const shop = document.querySelector('[data-shop]');
   if (shop) {

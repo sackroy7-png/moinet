@@ -55,7 +55,8 @@
     return s;
   };
   /* rangée de noms dont l'élément choisi vient se placer au centre */
-  const centerRow = (row, el) => row.style.setProperty('--shift', `${(row.clientWidth / 2 - (el.offsetLeft + el.offsetWidth / 2)).toFixed(1)}px`);
+  /* le focus d'un nom fait défiler la rangée (overflow: hidden) : on annule ce défilement, le décalage --shift centre le nom */
+  const centerRow = (row, el) => { row.scrollLeft = 0; row.style.setProperty('--shift', `${(row.clientWidth / 2 - (el.offsetLeft + el.offsetWidth / 2)).toFixed(1)}px`); };
   /* une seule étape de tabulation par rangée, les flèches passent d'un nom à l'autre */
   const roving = (els, i) => els.forEach((b, k) => { b.tabIndex = k === i ? 0 : -1; });
 
@@ -278,6 +279,10 @@
     const items = [...fan.querySelectorAll('.fan-item')], names = [...fan.querySelectorAll('.fan-name')], n = items.length;
     if (n < 3 || names.length !== n) return;
     fan.classList.add('is-live');
+    /* boîtes en vente : le contenu, le prix et le lien de la boîte choisie s'affichent sous les noms */
+    const details = fan.querySelector('.fan-details');
+    const infos = details ? items.map((it) => it.querySelector('.fan-info')).filter(Boolean) : [];
+    infos.forEach((x) => details.append(x));
     const glow = [document.createElement('img'), document.createElement('img')];
     glow.forEach((g) => { g.alt = ''; amb.append(g); });
     let cur = 0, side = 0;
@@ -289,6 +294,7 @@
         it.setAttribute('aria-hidden', String(d !== 0));
       });
       names.forEach((b, i) => b.setAttribute('aria-pressed', String(i === cur)));
+      infos.forEach((x, i) => { x.hidden = i !== cur; });
       roving(names, cur); centerRow(row, names[cur]);
       light();
     };
@@ -304,6 +310,7 @@
     if (!near) new IntersectionObserver(([e], o) => { if (e.isIntersecting) { near = true; o.disconnect(); light(); } }, { rootMargin: '60% 0px' }).observe(fan);
     const go = (i) => { cur = (i % n + n) % n; place(); };
     names.forEach((b, i) => b.addEventListener('click', () => go(i)));
+    row.addEventListener('scroll', () => { row.scrollLeft = 0; });
     fan.querySelector('[data-fan-prev]').addEventListener('click', () => go(cur - 1));
     fan.querySelector('[data-fan-next]').addEventListener('click', () => go(cur + 1));
     row.addEventListener('keydown', (ev) => {

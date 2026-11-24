@@ -67,7 +67,9 @@ WebP sont versionnés).
      « Nouveau », pastille qui dépasse du bord ; scène épinglée des parfums (la pastille se retourne,
      la couleur s'ouvre en octogone, trois vrais produits par parfum) ; manifeste qui s'allume mot à
      mot avec vignettes ; mosaïque à photos glissantes ; fenêtre de l'atelier ; frise de gravures ;
-     éventail 3D des boîtes ; boutiques sur bleu Vichy avec devanture qui change ; nom de la maison
+     éventail 3D des boîtes en vente (`#boites`, 9 boîtes : photo, contenu, prix « dès » et lien vers la
+     fiche, mis à jour par `catalogue.js` via `data-box` ; demandé par le client en nov. 2026, les pièces
+     d'archives restent dans l'éventail de « La Maison », avec un lien vers ces boîtes) ; boutiques sur bleu Vichy avec devanture qui change ; nom de la maison
      en grand dans le pied de page.
    - **Pages intérieures** : même cadre photo en tête de page, frise tracée (`data-trace`), pellicule
      d'archives (`data-drift`), éventail sur « La Maison », pastille 3D sur « Savoir-faire ».

@@ -96,7 +96,7 @@ add_filter( 'woocommerce_enqueue_styles', function ( $styles ) {
 /* Avant tout rendu : animations autorisées, ouverture en octogone une fois par visite ; polices préchargées. */
 add_action( 'wp_head', function () {
 	echo '<script>try{var d=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches){d.classList.add("motion");if(!sessionStorage.getItem("moinet-intro")){d.classList.add("intro");sessionStorage.setItem("moinet-intro","1")}}}catch(e){}</script>' . "\n";
-	foreach ( array( 'bodoni-moda-latin-opsz-normal.woff2', 'jost-latin-wght-normal.woff2' ) as $font ) {
+	foreach ( array( 'adobe-devanagari-bold-latin.woff2', 'jost-latin-wght-normal.woff2' ) as $font ) {
 		printf( '<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n", esc_url( moinet_asset( 'fonts/' . $font ) ) );
 	}
 	echo '<meta name="theme-color" content="#d71535">' . "\n";

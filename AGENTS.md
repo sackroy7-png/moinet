@@ -19,7 +19,10 @@ WebP sont versionnés).
 ## Direction artistique « La boîte en fer »
 
 - Rouge Moinet `#d71535` (relevé sur le logo), crème `#faf5ec`, encre `#221c19`, bleu carreaux Vichy `#2a4a96`.
-- Bodoni Moda (titres) + Jost (texte), auto-hébergées dans `assets/fonts` (licence OFL).
+- Titres : Adobe Devanagari Bold, la police des titres du site actuel (demande du client, nov. 2026 ;
+  fichier repris de confiserie-moinet.fr, réduit au latin : `assets/fonts/adobe-devanagari-bold-latin.woff2`,
+  famille CSS « Moinet Titres », variable `--serif`). Police commerciale Adobe : la licence de Moinet doit
+  couvrir le nouveau site. Texte : Jost (licence OFL). Polices auto-hébergées dans `assets/fonts`.
 - Signature : l'octogone, forme du logo et de la pastille. Coins coupés des cadres (`.cut`), pastille
   en volume, fonds et pages qui s'ouvrent en octogone ; les carreaux Vichy (`.vichy`) avec parcimonie.
 - Couleurs des parfums (menthe, citron, anis, orange, sans sucre) : contraste ≥ 4,5:1 avec leur texte.

@@ -180,7 +180,7 @@ def page(meta, main, slug):
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{og_img}">
 <link rel="icon" href="assets/img/favicon.png" type="image/png">
-<link rel="preload" href="assets/fonts/bodoni-moda-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/adobe-devanagari-bold-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/main.css">
 {INTRO}

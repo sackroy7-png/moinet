@@ -339,4 +339,78 @@
   if (word && 'IntersectionObserver' in window) {
     new IntersectionObserver(([e], o) => { if (e.isIntersecting) { word.classList.add('is-in'); o.disconnect(); } }, { threshold: 0.35 }).observe(word);
   } else if (word) word.classList.add('is-in');
+
+  /* ---------- Pluie de pastilles en arrière-plan (demande du client, nov. 2026) ----------
+     Des pastilles du Bassin de Vichy tombent lentement derrière le contenu, en trois plans de
+     profondeur (les plus lointaines plus petites, floues et pâles). Le défilement les entraîne,
+     chaque plan à sa vitesse. Un canvas fixe en z-index -1 : visible sur le fond crème, caché par
+     les sections colorées et les photos. Rien sous prefers-reduced-motion (sortie plus haut). */
+  (() => {
+    const cv = document.createElement('canvas');
+    cv.className = 'pluie'; cv.setAttribute('aria-hidden', 'true');
+    document.body.prepend(cv);
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    const img = new Image();
+    /* image de la pastille : intégrée (site-complet.html), dossier du thème (WordPress) ou relative */
+    const here = document.querySelector('script[src*="immersif.js"]');
+    img.src = (window.MOINET_IMG && window.MOINET_IMG['assets/img/pastille.webp'])
+      || (here ? here.src.replace(/js\/immersif\.js.*$/, 'img/pastille.webp') : 'assets/img/pastille.webp');
+    const PLANS = [ // taille (px), flou (px), opacité, vitesse de chute (px/s), entraînement au défilement
+      { size: 30, blur: 2.4, alpha: 0.55, fall: 18, drag: 0.25 },
+      { size: 52, blur: 0.8, alpha: 0.85, fall: 30, drag: 0.5 },
+      { size: 84, blur: 0, alpha: 1, fall: 44, drag: 0.85 },
+    ];
+    let W = 0, H = 0, dpr = 1, sprites = [], drops = [];
+    const sprite = (pl) => { // pastille pré-dessinée une fois par plan (le flou coûte cher image par image)
+      const pad = Math.ceil(pl.blur * 3), n = Math.ceil((pl.size + pad * 2) * dpr);
+      const c = document.createElement('canvas'); c.width = c.height = n;
+      const x = c.getContext('2d'); x.scale(dpr, dpr);
+      if (pl.blur) x.filter = `blur(${pl.blur}px)`;
+      x.shadowColor = 'rgba(34, 28, 25, .34)'; x.shadowBlur = pl.size * 0.22; x.shadowOffsetY = pl.size * 0.1;
+      x.drawImage(img, pad, pad, pl.size, pl.size);
+      return { c, half: n / dpr / 2 };
+    };
+    const seed = (d, top) => {
+      d.pl = d.pl ?? (Math.random() < 0.45 ? 0 : Math.random() < 0.6 ? 1 : 2);
+      const P = PLANS[d.pl];
+      d.x = Math.random() * W; d.y = top ? -P.size * 2 - Math.random() * H * 0.5 : Math.random() * H;
+      d.r = Math.random() * Math.PI * 2; d.vr = (Math.random() - 0.5) * 0.9;
+      d.sw = Math.random() * Math.PI * 2; d.amp = 8 + Math.random() * 18; d.k = 0.8 + Math.random() * 0.4;
+      return d;
+    };
+    const size = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = window.innerWidth; H = window.innerHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      if (img.complete && img.naturalWidth) sprites = PLANS.map(sprite);
+      const n = W < 700 ? 10 : 20;
+      while (drops.length < n) drops.push(seed({}, false));
+      drops.length = n;
+    };
+    let lastScroll = window.scrollY;
+    const draw = (t, dt) => {
+      if (!sprites.length) return;
+      const sy = window.scrollY, ds = sy - lastScroll; lastScroll = sy;
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
+      for (const d of drops) {
+        const P = PLANS[d.pl], sp = sprites[d.pl];
+        d.y += (P.fall * d.k * dt) / 1000 - ds * P.drag;
+        d.r += (d.vr * dt) / 1000; d.sw += dt / 1600;
+        /* boucle verticale : sortie en bas, retour en haut (et l'inverse quand on remonte vite) */
+        const m = P.size * 1.5, span = H + m * 2;
+        if (d.y > H + m) { d.y -= span; d.x = Math.random() * W; }
+        else if (d.y < -m) { d.y += span; d.x = Math.random() * W; }
+        const x = d.x + Math.sin(d.sw) * d.amp;
+        ctx.setTransform(dpr * Math.cos(d.r), dpr * Math.sin(d.r), -dpr * Math.sin(d.r), dpr * Math.cos(d.r), x * dpr, d.y * dpr);
+        ctx.globalAlpha = P.alpha;
+        ctx.drawImage(sp.c, -sp.half, -sp.half, sp.half * 2, sp.half * 2);
+      }
+      ctx.globalAlpha = 1;
+    };
+    img.addEventListener('load', () => { sprites = PLANS.map(sprite); });
+    size();
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(size, 150); });
+    scene(document.body, draw, '0px');
+  })();
 })();

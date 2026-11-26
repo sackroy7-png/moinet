@@ -1469,3 +1469,10 @@ html:not(.motion) .archives { overflow-x: auto; }
 .fan--boites.is-live .fan-details { display: block; text-align: center; margin: clamp(6px, 1.2vw, 14px) auto 0; padding-inline: var(--gutter); max-width: 640px; min-height: 9.5em; }
 .fan--boites.is-live .fan-details .fan-info h3 { display: none; }
 .fan--boites.is-live .fan-details .fan-info p { margin-inline: auto; }
+
+/* ============ Pluie de pastilles (immersif.js, nov. 2026) ============
+   Derrière tout le contenu (z-index -1) : visible sur le fond crème de la page, cachée par les
+   sections qui ont leur propre fond. Le fond du body se propage au canevas de la page, donc il
+   reste dessous. */
+.pluie { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+@media print { .pluie { display: none; } }

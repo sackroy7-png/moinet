@@ -74,6 +74,12 @@ WebP sont versionnés).
      fiche, mis à jour par `catalogue.js` via `data-box` ; demandé par le client en nov. 2026, les pièces
      d'archives restent dans l'éventail de « La Maison », avec un lien vers ces boîtes) ; boutiques sur bleu Vichy avec devanture qui change ; nom de la maison
      en grand dans le pied de page.
+   - **Pluie de pastilles** (toutes les pages, demande du client en nov. 2026, inspirée des cerises
+     qui tombent sur le site de Ferrara) : canvas fixe `.pluie` en `z-index: -1`, visible sur le fond
+     crème et caché par les sections qui ont leur fond ; 20 pastilles (10 sur mobile) sur trois plans
+     de profondeur (taille, flou, opacité), qui tombent lentement, tournent, et suivent le défilement
+     chacune à sa vitesse ; boucle verticale. Dans la boucle commune de `immersif.js` ; rien sous
+     mouvement réduit.
    - **Pages intérieures** : même cadre photo en tête de page, frise tracée (`data-trace`), pellicule
      d'archives (`data-drift`), éventail sur « La Maison », pastille 3D sur « Savoir-faire ».
    - **Transitions entre pages** en octogone : `@view-transition` (multi-pages) et
